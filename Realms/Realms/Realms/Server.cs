@@ -19,6 +19,7 @@ namespace Realms
     public class Server
     {
         MySqlConnection connection;
+        MySqlCommand cmd;
 
         protected string uid, password, database, serverName, path;
         protected int connectionTimer = 0, timeOut = 1000;

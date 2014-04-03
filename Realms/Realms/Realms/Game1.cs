@@ -22,10 +22,18 @@ namespace Realms
 
         string connectionTest = "";
 
+        static ContentManager otherContent;
+        public static ContentManager GameContent
+        {
+            get { return otherContent; }
+        }
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
+            otherContent = new ContentManager(Content.ServiceProvider);
+            otherContent.RootDirectory = "Content";
 
             //string cs = "server=mysql.chung.special-topics.net;uid=dchung14;pwd=Chung6616;database=chungdb";
 
