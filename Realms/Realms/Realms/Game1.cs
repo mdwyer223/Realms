@@ -22,6 +22,9 @@ namespace Realms
 
         string connectionTest = "";
 
+        NonControlledBlock nB;
+        ControlledBlock b;
+
         static ContentManager otherContent;
         public static ContentManager GameContent
         {
@@ -39,13 +42,14 @@ namespace Realms
 
             server = new Server("dchung14", "Chung6616", "chungdb", "mysql.chung.special-topics.net");
 
-            //server.changeDB("chungdb");
-
             this.connectionTest = server.Message;
         }
 
         protected override void Initialize()
         {
+            nB = new NonControlledBlock(server.Connection);
+            b = new ControlledBlock(server.Connection);
+
             base.Initialize();
         }
 
@@ -56,6 +60,7 @@ namespace Realms
 
         protected override void Update(GameTime gameTime)
         {
+            b.Update(gameTime);
             base.Update(gameTime);
         }
 
@@ -65,6 +70,8 @@ namespace Realms
 
             spriteBatch.Begin();
             spriteBatch.DrawString(Content.Load<SpriteFont>("Normal"), connectionTest, new Vector2(5, 5), Color.White);
+            nB.Draw(spriteBatch);
+            b.Draw(spriteBatch);
             spriteBatch.End();
 
             base.Draw(gameTime);

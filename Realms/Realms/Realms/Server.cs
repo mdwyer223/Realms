@@ -31,6 +31,11 @@ namespace Realms
             get { return message; }
         }
 
+        public MySqlConnection Connection
+        {
+            get { return connection; }
+        }
+
         public Server(string user, string pass, string db, string server)
         {
             this.uid = user;
@@ -39,7 +44,7 @@ namespace Realms
             this.serverName = server;
             message = "";
 
-            path = "server=" + serverName + ";uid=" + uid + ";pwd=" + password + ";database=" + database;
+            path = "server=" + serverName + ";uid=" + uid + ";pwd=" + password + ";database=" + database + ";check parameters=false"; //+ ";CheckParmeters=false";
 
             connection = new MySqlConnection(path);
             Open();
