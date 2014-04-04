@@ -77,6 +77,7 @@ namespace Realms
 
     public class ControlledBlock : Block
     {
+        protected MySqlCommand cmd;
         protected KeyboardState keys, oldKeys;
         protected Vector2 pos, oldPos;
         int delay = 40, delayTimer = 0;
@@ -89,21 +90,36 @@ namespace Realms
             keys = oldKeys = Keyboard.GetState();
             pos = oldPos = new Vector2(rec.X, rec.Y);
             ID = 2;
+
+            int x = 0, y = 0;
+
+            cmd = new MySqlCommand("getPos", current);
+            cmd.CommandType = System.Data.CommandType.StoredProcedure;
+            cmd.Prepare();
+            cmd.Parameters.Add(new MySqlParameter("idForProcess", ID));
+            cmd.Parameters.Add(new MySqlParameter("x", x));
+            cmd.Parameters["x"].Direction = System.Data.ParameterDirection.InputOutput;
+            cmd.Parameters.Add(new MySqlParameter("y", y));
+            cmd.Parameters["y"].Direction = System.Data.ParameterDirection.InputOutput;
+            //cmd.ExecuteNonQuery();
+            MySqlDataReader dataReader = cmd.ExecuteReader();
+            dataReader.Read();
+            x = (int)dataReader[0];
+            y = (int)dataReader[1];
+            dataReader.Close();
+            rec.X = x;
+            rec.Y = y;
         }
         
         public override void Update(GameTime gametime)
         {
-            if (!separate)
-            {
-                rec.X += 200;
-                separate = true;
-            }
-
             keys = Keyboard.GetState();
             pos = new Vector2(rec.X, rec.Y);
 
             if (delayTimer < delay)
             {
+
+
                 delayTimer++;
                 if (delayTimer > delay)
                 {
