@@ -43,6 +43,8 @@ namespace Realms
         protected MySqlDataReader reader;
         protected int x, y;
 
+        int delay = 40, delayTimer = 0;
+
         public NonControlledBlock(MySqlConnection current)
             : base(current)
         {
@@ -71,7 +73,43 @@ namespace Realms
         {
             //get position from the database itself
 
+            if (delayTimer < delay)
+            {
+
+
+                delayTimer++;
+                if (delayTimer > delay)
+                {
+                    delayTimer = delay;
+                }
+            }
+
+            if (delayTimer == delay)
+            {
+                getPos();
+            }
+
             base.Update(gametime);
+        }
+
+        private void getPos()
+        {
+            cmd = new MySqlCommand("getPos", this.connection);
+            cmd.CommandType = System.Data.CommandType.StoredProcedure;
+            cmd.Prepare();
+            cmd.Parameters.Add(new MySqlParameter("idForProcess", ID));
+            cmd.Parameters.Add(new MySqlParameter("x", x));
+            cmd.Parameters["x"].Direction = System.Data.ParameterDirection.InputOutput;
+            cmd.Parameters.Add(new MySqlParameter("y", y));
+            cmd.Parameters["y"].Direction = System.Data.ParameterDirection.InputOutput;
+            //cmd.ExecuteNonQuery();
+            MySqlDataReader dataReader = cmd.ExecuteReader();
+            dataReader.Read();
+            x = (int)dataReader[0];
+            y = (int)dataReader[1];
+            dataReader.Close();
+            rec.X = x;
+            rec.Y = y;
         }
     }
 
