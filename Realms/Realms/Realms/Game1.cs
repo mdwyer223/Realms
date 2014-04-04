@@ -31,6 +31,10 @@ namespace Realms
             get { return otherContent; }
         }
 
+        public static Viewport Screeen
+        {//TODO: get{} view port;
+        }
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -60,6 +64,7 @@ namespace Realms
 
         protected override void Update(GameTime gameTime)
         {
+            nB.Update(gameTime);
             b.Update(gameTime);
             base.Update(gameTime);
         }

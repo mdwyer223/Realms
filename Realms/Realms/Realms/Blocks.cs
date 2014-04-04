@@ -49,7 +49,7 @@ namespace Realms
             : base(current)
         {
             color = Color.Red;
-            ID = 1;
+            ID = 2;
 
             cmd = new MySqlCommand("getPos", current);
             cmd.CommandType = System.Data.CommandType.StoredProcedure;
@@ -86,6 +86,7 @@ namespace Realms
 
             if (delayTimer == delay)
             {
+                delayTimer = 0;
                 getPos();
             }
 
@@ -127,7 +128,7 @@ namespace Realms
             color = Color.Green;
             keys = oldKeys = Keyboard.GetState();
             pos = oldPos = new Vector2(rec.X, rec.Y);
-            ID = 2;
+            ID = 1;
 
             int x = 0, y = 0;
 
