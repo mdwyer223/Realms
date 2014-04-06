@@ -31,8 +31,10 @@ namespace Realms
             get { return otherContent; }
         }
 
-        public static Viewport Screeen
+        private static Viewport screen;
+        public static Viewport Screen
         {//TODO: get{} view port;
+            get { return screen; }                
         }
 
         public Game1()
@@ -41,6 +43,7 @@ namespace Realms
             Content.RootDirectory = "Content";
             otherContent = new ContentManager(Content.ServiceProvider);
             otherContent.RootDirectory = "Content";
+            
 
             //string cs = "server=mysql.chung.special-topics.net;uid=dchung14;pwd=Chung6616;database=chungdb";
 
@@ -53,6 +56,7 @@ namespace Realms
         {
             nB = new NonControlledBlock(server.Connection);
             b = new ControlledBlock(server.Connection);
+            screen = GraphicsDevice.Viewport;
 
             base.Initialize();
         }

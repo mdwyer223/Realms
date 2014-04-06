@@ -8,14 +8,19 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
-using MySql.Data.MySqlClient;
-
 namespace Realms
 {
     public class BaseSprite
     {
         protected Texture2D texture;
         protected Color color;
+
+        protected Vector2 velocity;
+        public Vector2 Velocity
+        {
+            get { return velocity; }
+            protected set { velocity = value; }
+        }
 
         protected Rectangle rec;
         public Rectangle Rec
@@ -33,21 +38,30 @@ namespace Realms
                 rec.Y = (int)(value.Y + .5); 
             }
         }
-
+        
         public Vector2 Center
         {
             get { return new Vector2(Rec.Center.X, Rec.Center.Y); }
+        }        
+
+        public virtual bool IsVisible
+        {
+            get;
+            protected set;
         }
 
+        public int Speed
+        {
+            get;
+            private set;
+        }
 
-
-        public BaseSprite(Texture2D texture, float scaleFactor)
+        public BaseSprite(Texture2D texture, float scaleFactor, float secondsToCrossScreen, Vector2 startPos)
         {
             this.texture = texture;
             color = Color.White;
 
-            int inDisplayWidth = 800;//TODO: Remove
-            int blah = Game.GraphicsDevice.Viewport;
+            int inDisplayWidth = Game1.Screen.Width;            
 
             if (texture != null)
             {
@@ -55,6 +69,11 @@ namespace Realms
                 float aspectRatio = (float)texture.Width / texture.Height;
                 rec.Height = (int)(Rec.Width / aspectRatio + 0.5f);
             }
+            
+            // Shorthand condition logic
+            Speed = (secondsToCrossScreen > 0) ? (int)(inDisplayWidth / (secondsToCrossScreen * 60)) : 0;            
+
+            Position = startPos;
         }
 
         public virtual void update(GameTime gameTime)
@@ -63,7 +82,8 @@ namespace Realms
 
         public virtual void draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(texture, Rec, color);
+            if (IsVisible)
+                spriteBatch.Draw(texture, Rec, color);
         }
 
 
