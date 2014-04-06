@@ -31,6 +31,12 @@ namespace Realms
             get { return otherContent; }
         }
 
+        static bool active = true;
+        public static bool Active
+        {
+            get { return active; }
+        }
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -61,6 +67,7 @@ namespace Realms
         protected override void Update(GameTime gameTime)
         {
             b.Update(gameTime);
+            nB.Update(gameTime);
             base.Update(gameTime);
         }
 
@@ -76,5 +83,12 @@ namespace Realms
 
             base.Draw(gameTime);
         }
+
+        public static void changeActive()
+        {
+            active = !active;
+        }
+
+        
     }
 }
