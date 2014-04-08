@@ -45,9 +45,11 @@ namespace Realms
             message = "";
 
             path = "server=" + serverName + ";uid=" + uid + ";pwd=" + password + ";database=" + database + ";check parameters=false"; //+ ";CheckParmeters=false";
+        }
 
-            connection = new MySqlConnection(path);
-            Open();
+        public MySqlConnection getConn()
+        {
+            return new MySqlConnection(path);
         }
 
         public void Open()
@@ -91,6 +93,11 @@ namespace Realms
             database = dbName;
             connection = new MySqlConnection(path);
             Open();
+        }
+
+        public void Close()
+        {
+            connection.Close();
         }
     }
 }

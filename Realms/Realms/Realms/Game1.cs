@@ -53,8 +53,8 @@ namespace Realms
 
         protected override void Initialize()
         {
-            nB = new NonControlledBlock(server.Connection);
-            b = new ControlledBlock(server.Connection);
+            nB = new NonControlledBlock(server);
+            b = new ControlledBlock(server);
 
             base.Initialize();
         }

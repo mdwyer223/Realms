@@ -18,13 +18,13 @@ namespace Realms
         private Texture2D texture;
         protected Rectangle rec;
         protected Color color;
-        protected MySqlConnection connection;
+        protected Server server;
         protected int ID;
 
-        public Block(MySqlConnection currentConnection)
+        public Block(Server currentConnection)
         {
             texture = Game1.GameContent.Load<Texture2D>("Particle");
-            this.connection = currentConnection;
+            this.server = currentConnection;
             color = Color.White;
             this.rec = new Rectangle(0,0, 10,10);
         }
@@ -48,7 +48,7 @@ namespace Realms
 
         int delay = 40, delayTimer = 0;
 
-        public NonControlledBlock(MySqlConnection current)
+        public NonControlledBlock(Server current)
             : base(current)
         {
             color = Color.Red;
@@ -60,27 +60,7 @@ namespace Realms
         }
 
         public override void Update(GameTime gametime)
-        {
-            //get position from the database itself
-            /*
-            if (delayTimer < delay)
-            {
-
-
-                delayTimer++;
-                if (delayTimer > delay)
-                {
-                    delayTimer = delay;
-                }
-            }
-
-            if (delayTimer == delay)
-            {
-                getPos();
-                delayTimer = 0;
-            }
-             */
-
+        {          
             base.Update(gametime);
         }
 
@@ -88,7 +68,9 @@ namespace Realms
         {
             while (Game1.Active)
             {
-                cmd = new MySqlCommand("getPos", this.connection);
+                MySqlConnection c = server.getConn();
+                c.Open();
+                cmd = new MySqlCommand("getPos", c);
                 cmd.CommandType = System.Data.CommandType.StoredProcedure;
                 cmd.Prepare();
                 cmd.Parameters.Add(new MySqlParameter("idForProcess", ID));
@@ -97,21 +79,16 @@ namespace Realms
                 cmd.Parameters.Add(new MySqlParameter("y", y));
                 cmd.Parameters["y"].Direction = System.Data.ParameterDirection.InputOutput;
                 //cmd.ExecuteNonQuery();
-                try
-                {
-                    MySqlDataReader dataReader = cmd.ExecuteReader();
-                    dataReader.Read();
-                    x = (int)dataReader[0];
-                    y = (int)dataReader[1];
-                    rec.X = x;
-                    rec.Y = y;
-                    dataReader.Close();
-                }
-                catch (MySqlException e)
-                {
-                    string message = e.Message;
-                }
-
+               
+                MySqlDataReader dataReader = cmd.ExecuteReader();
+                dataReader.Read();
+                x = (int)dataReader[0];
+                y = (int)dataReader[1];
+                rec.X = x;
+                rec.Y = y;
+                dataReader.Close();
+                
+                c.Close();
                 Thread.Sleep(100);
             }
         }
@@ -128,7 +105,7 @@ namespace Realms
         int problems;
 
 
-        public ControlledBlock(MySqlConnection current)
+        public ControlledBlock(Server current)
             : base(current)
         {
             color = Color.Green;
@@ -167,19 +144,17 @@ namespace Realms
         {
             while (Game1.Active)
             {
-                MySqlCommand cmd = new MySqlCommand("setPos", connection);
+                MySqlConnection c = server.getConn();
+                c.Open();
+                MySqlCommand cmd = new MySqlCommand("setPos", c);
                 cmd.CommandType = System.Data.CommandType.StoredProcedure;
                 cmd.Parameters.Add(new MySqlParameter("idForP", ID));
                 cmd.Parameters.Add(new MySqlParameter("x", rec.X));
                 cmd.Parameters.Add(new MySqlParameter("y", rec.Y));
-                try
-                {
-                    cmd.ExecuteNonQuery();
-                }
-                catch (MySqlException e)
-                {
-                    problems += 1;
-                }
+                
+                cmd.ExecuteNonQuery();
+                
+                c.Close();
                 Thread.Sleep(100);
             }
         }
@@ -188,7 +163,9 @@ namespace Realms
         {
             int x = 0, y = 0;
 
-            cmd = new MySqlCommand("getPos", this.connection);
+            MySqlConnection c = server.getConn();
+            c.Open();
+            cmd = new MySqlCommand("getPos", c);
             cmd.CommandType = System.Data.CommandType.StoredProcedure;
             cmd.Prepare();
             cmd.Parameters.Add(new MySqlParameter("idForProcess", ID));
@@ -196,21 +173,16 @@ namespace Realms
             cmd.Parameters["x"].Direction = System.Data.ParameterDirection.InputOutput;
             cmd.Parameters.Add(new MySqlParameter("y", y));
             cmd.Parameters["y"].Direction = System.Data.ParameterDirection.InputOutput;
-            //cmd.ExecuteNonQuery();
-            try
-            {
-                MySqlDataReader dataReader = cmd.ExecuteReader();
-                dataReader.Read();
-                x = (int)dataReader[0];
-                y = (int)dataReader[1];
-                dataReader.Close();
-            }
-            catch (MySqlException e)
-            {
-                //do nothing for now
-            }
+            
+            MySqlDataReader dataReader = cmd.ExecuteReader();
+            dataReader.Read();
+            x = (int)dataReader[0];
+            y = (int)dataReader[1];
+            dataReader.Close();
+            
             rec.X = x;
             rec.Y = y;
+            c.Close();
         }
     }
 }
