@@ -44,6 +44,10 @@ namespace Realms
         protected MySqlDataReader reader;
         protected int x, y;
 
+        Vector2 velo;
+
+        Vector2 oldPos, newPos, currentPos;
+
         Thread tGetPos;
 
         int delay = 40, delayTimer = 0;
@@ -52,7 +56,13 @@ namespace Realms
             : base(current)
         {
             color = Color.Red;
-            ID = 1;
+            ID = 2;
+
+            newPos = oldPos = currentPos = getInitialPos();
+            velo = Vector2.Zero;
+
+            rec.X = (int)(oldPos.X);
+            rec.Y = (int)(oldPos.Y);
 
             tGetPos = new Thread(new ThreadStart(getPos));
 
@@ -60,7 +70,12 @@ namespace Realms
         }
 
         public override void Update(GameTime gametime)
-        {          
+        {
+            //if (Math.Abs(currentPos.X - newPos.X) >= 3 && Math.Abs(currentPos.Y - newPos.Y) >= 3)
+                currentPos += velo;
+
+            rec.X = (int)(currentPos.X + .5f);
+            rec.Y = (int)(currentPos.Y + .5f);
             base.Update(gametime);
         }
 
@@ -68,6 +83,13 @@ namespace Realms
         {
             while (Game1.Active)
             {
+                if (currentPos != oldPos)
+                {
+                    //velo = (currentPos - oldPos);
+                    //if (velo != Vector2.Zero)
+                    //    velo.Normalize();
+                }
+                oldPos = newPos;
                 MySqlConnection c = server.getConn();
                 c.Open();
                 cmd = new MySqlCommand("getPos", c);
@@ -78,19 +100,50 @@ namespace Realms
                 cmd.Parameters["x"].Direction = System.Data.ParameterDirection.InputOutput;
                 cmd.Parameters.Add(new MySqlParameter("y", y));
                 cmd.Parameters["y"].Direction = System.Data.ParameterDirection.InputOutput;
-                //cmd.ExecuteNonQuery();
-               
+
                 MySqlDataReader dataReader = cmd.ExecuteReader();
                 dataReader.Read();
-                x = (int)dataReader[0];
-                y = (int)dataReader[1];
-                rec.X = x;
-                rec.Y = y;
+                newPos.X = (int)dataReader[0];
+                newPos.Y = (int)dataReader[1];
                 dataReader.Close();
-                
                 c.Close();
+                //newPos = new Vector2(0, 60);
+                //oldPos = Vector2.Zero;
+                if (Math.Abs(currentPos.X - newPos.X) >= 10|| Math.Abs(currentPos.Y - newPos.Y) >= 10)
+                {
+                    velo = (newPos - currentPos);
+                    if (velo != Vector2.Zero)
+                    {
+                        velo.Normalize();
+                    }
+                }
+                else
+                    velo = Vector2.Zero;
+
                 Thread.Sleep(100);
             }
+        }
+        private Vector2 getInitialPos()
+        {
+            MySqlConnection c = server.getConn();
+            c.Open();
+            cmd = new MySqlCommand("getPos", c);
+            cmd.CommandType = System.Data.CommandType.StoredProcedure;
+            cmd.Prepare();
+            cmd.Parameters.Add(new MySqlParameter("idForProcess", ID));
+            cmd.Parameters.Add(new MySqlParameter("x", x));
+            cmd.Parameters["x"].Direction = System.Data.ParameterDirection.InputOutput;
+            cmd.Parameters.Add(new MySqlParameter("y", y));
+            cmd.Parameters["y"].Direction = System.Data.ParameterDirection.InputOutput;
+               
+            MySqlDataReader dataReader = cmd.ExecuteReader();
+            dataReader.Read();
+            x = (int)dataReader[0];
+            y = (int)dataReader[1];           
+            dataReader.Close();                
+            c.Close();
+                
+            return new Vector2(x, y);
         }
     }
 
@@ -111,7 +164,7 @@ namespace Realms
             color = Color.Green;
             keys = oldKeys = Keyboard.GetState();
             
-            ID = 2;
+            ID = 1;
 
             getPos();
 
