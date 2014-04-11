@@ -109,7 +109,7 @@ namespace Realms
                 c.Close();
                 //newPos = new Vector2(0, 60);
                 //oldPos = Vector2.Zero;
-                if (Math.Abs(currentPos.X - newPos.X) >= 10|| Math.Abs(currentPos.Y - newPos.Y) >= 10)
+                if (Math.Abs(currentPos.X - newPos.X) >= 5|| Math.Abs(currentPos.Y - newPos.Y) >= 5)
                 {
                     velo = (newPos - currentPos);
                     if (velo != Vector2.Zero)
@@ -120,7 +120,7 @@ namespace Realms
                 else
                     velo = Vector2.Zero;
 
-                Thread.Sleep(100);
+                Thread.Sleep(50);
             }
         }
         private Vector2 getInitialPos()
@@ -208,7 +208,7 @@ namespace Realms
                 cmd.ExecuteNonQuery();
                 
                 c.Close();
-                Thread.Sleep(100);
+                Thread.Sleep(50);
             }
         }
 

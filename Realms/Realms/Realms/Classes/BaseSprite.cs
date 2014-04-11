@@ -40,16 +40,20 @@ namespace Realms
 
         public BaseSprite(Vector2 startPos, float scaleFactor, Texture2D tex)
         {
+            IsDead = false;
+            IsVisible = true;
             this.position = startPos;
-            this.texture = tex;
+            this.texture = tex;//check to see if the texture is null first
             color = Color.White;
             //rec logic, aspectratio
         }
 
         public BaseSprite(Vector2 startPos, float scaleFactor, Texture2D tex, Color color)
         {
+            IsDead = false;
+            IsVisible = true;
             this.position = startPos;
-            this.texture = tex;
+            this.texture = tex;//check to see if the texture is null first
             this.color = color;
             //rec logic, aspectratio
         }
