@@ -119,6 +119,7 @@
     <Compile Include="Classes\Location.cs" />
     <Compile Include="Classes\Tile.cs" />
     <Compile Include="Input.cs" />
+    <Compile Include="Menu\Button.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Game1.cs" />
