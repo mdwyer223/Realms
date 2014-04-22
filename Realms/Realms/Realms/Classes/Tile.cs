@@ -11,6 +11,8 @@ namespace Realms
 {
     public class Tile : BaseSprite
     {
+        const int T_HEIGHT = 32, T_WIDTH = 32;
+
         Location loc;
         bool open;
 
@@ -25,18 +27,22 @@ namespace Realms
             get { return loc; }
         }
 
-        public Tile(Location loc, float scaleFactor, Texture2D tex)
-            :base  (loc.Position, scaleFactor, tex)
+        public Tile(Location loc, Texture2D tex)
+            :base  (loc.Position, 0, tex)
         {
+            rec = new Rectangle((int)loc.Column * T_WIDTH, (int)loc.Row * T_HEIGHT, T_WIDTH, T_HEIGHT);
+            position = new Vector2((int)loc.Column * T_WIDTH, (int)loc.Row * T_HEIGHT);
             this.loc = loc;
             open = true;
 
             //load texture
         }
 
-        public Tile(Location loc, float scaleFactor, Texture2D tex, bool open)
-            : base(loc.Position, scaleFactor, tex)
+        public Tile(Location loc, Texture2D tex, bool open)
+            : base(loc.Position, 0, tex)
         {
+            rec = new Rectangle((int)loc.Column * T_WIDTH, (int)loc.Row * T_HEIGHT, T_WIDTH, T_HEIGHT);
+            position = new Vector2((int)loc.Column * T_WIDTH, (int)loc.Row * T_HEIGHT);
             this.loc = loc;
             this.open = open;
         }
@@ -50,13 +56,21 @@ namespace Realms
                 {
                     if (objects[i] != null && !objects[i].IsDead)
                     {
-                        //decide if open or not
-                        //location?
+                        if (this.isColliding(objects[i].Rec))
+                        {
+                            intersect = true;
+                        }
                     }
                 }
                 if (intersect)
                 {
                     open = false;
+                    this.color = Color.Red;
+                }
+                else
+                {
+                    open = true;
+                    this.color = Color.Green;
                 }
             }
         }

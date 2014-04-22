@@ -45,7 +45,14 @@ namespace Realms
             this.position = startPos;
             this.texture = tex;//check to see if the texture is null first
             color = Color.White;
-            //rec logic, aspectratio
+
+
+            if (texture != null)
+            {
+                rec.Width = (int)(Game1.View.Width * scaleFactor + 0.5f);
+                float aspectRatio = (float)texture.Width / texture.Height;
+                rec.Height = (int)(rec.Width / aspectRatio + 0.5f);
+            }
         }
 
         public BaseSprite(Vector2 startPos, float scaleFactor, Texture2D tex, Color color)
@@ -55,7 +62,14 @@ namespace Realms
             this.position = startPos;
             this.texture = tex;//check to see if the texture is null first
             this.color = color;
-            //rec logic, aspectratio
+
+
+            if (texture != null)
+            {
+                rec.Width = (int)(Game1.View.Width * scaleFactor + 0.5f);
+                float aspectRatio = (float)texture.Width / texture.Height;
+                rec.Height = (int)(rec.Width / aspectRatio + 0.5f);
+            }
         }
 
         public virtual void Update(GameTime gameTime)
@@ -66,8 +80,23 @@ namespace Realms
         {
             if (IsVisible)
             {
-                spriteBatch.Draw(texture, rec, color);
+                spriteBatch.Draw(texture, Rec, color);
             }
+        }
+
+        public bool isColliding(Rectangle target)
+        {
+            return Rec.Intersects(target);
+        }
+
+        public float measureDistance(Vector2 point1, Vector2 point2)
+        {
+            return (float)Math.Sqrt((Math.Pow(point1.X - point2.X, 2)) + (Math.Pow(point1.Y - point2.Y, 2)));
+        }
+
+        public float measureDistance(Vector2 point1)
+        {
+            return measureDistance(this.Position, point1);
         }
     }
 }

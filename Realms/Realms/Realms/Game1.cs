@@ -19,6 +19,7 @@ namespace Realms
         SpriteBatch spriteBatch;
 
         Server server;
+        World world;
 
         string connectionTest = "", keyPress = "";
 
@@ -29,6 +30,12 @@ namespace Realms
         public static ContentManager GameContent
         {
             get { return otherContent; }
+        }
+
+        static GraphicsDevice otherDevice;
+        public static Viewport View
+        {
+            get { return otherDevice.Viewport; }
         }
 
         static bool active = true;
@@ -53,8 +60,13 @@ namespace Realms
 
         protected override void Initialize()
         {
+            otherDevice = GraphicsDevice;
             nB = new NonControlledBlock(server);
             b = new ControlledBlock(server);
+
+            world = new World(this);
+            Components.Add(world);
+            world.Enabled = world.Visible = true;
 
             base.Initialize();
         }
@@ -73,10 +85,6 @@ namespace Realms
                 if (keyPress.Length > 0)
                     keyPress = keyPress.Remove(keyPress.Length - 1, 1);
             }
-            if (Input.actionBarPressed())
-            {
-                keyPress = "";
-            }
             b.Update(gameTime);
             nB.Update(gameTime);
             base.Update(gameTime);
@@ -84,16 +92,16 @@ namespace Realms
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.Black);
+
+            base.Draw(gameTime);
 
             spriteBatch.Begin();
             spriteBatch.DrawString(Content.Load<SpriteFont>("Normal"), connectionTest, new Vector2(5, 5), Color.White);
             spriteBatch.DrawString(Content.Load<SpriteFont>("Normal"), keyPress, new Vector2(5, 15), Color.Red);
             nB.Draw(spriteBatch);
             b.Draw(spriteBatch);
-            spriteBatch.End();
-
-            base.Draw(gameTime);
+            spriteBatch.End();  
         }
 
         public static void changeActive()

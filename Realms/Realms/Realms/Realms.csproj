@@ -114,12 +114,16 @@
   <ItemGroup>
     <Compile Include="Blocks.cs" />
     <Compile Include="Classes\AdvancedSprite.cs" />
+    <Compile Include="Classes\BaseCharacter.cs" />
     <Compile Include="Classes\BaseSprite.cs" />
     <Compile Include="Classes\Grid.cs" />
     <Compile Include="Classes\Location.cs" />
     <Compile Include="Classes\Tile.cs" />
+    <Compile Include="Components\MainMenu.cs" />
+    <Compile Include="Components\World.cs" />
     <Compile Include="Input.cs" />
     <Compile Include="Menu\Button.cs" />
+    <Compile Include="Menu\Textbox.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Game1.cs" />

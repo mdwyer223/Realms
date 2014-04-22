@@ -180,6 +180,15 @@ namespace Realms
                         case Keys.Z:
                             keyString = "Z";
                             break;
+                        case Keys.Space:
+                            keyString = " ";
+                            break;
+                        case Keys.OemComma:
+                            keyString = ",";
+                            break;
+                        case Keys.OemPeriod:
+                            keyString = ".";
+                            break;
                     }
                     if (keys.IsKeyUp(Keys.LeftShift) && keys.IsKeyUp(Keys.RightShift))
                     {
@@ -219,33 +228,38 @@ namespace Realms
             return (new Vector2(mouse.X, mouse.Y));
         }
 
+        public static Rectangle mouseRec()
+        {
+            return (new Rectangle((int)mousePos().X, (int)mousePos().Y, 10, 10));
+        }
+
         public static void Update()
         {
             keys = Keyboard.GetState();
             mouse = Mouse.GetState();
 
-            if ((keys.IsKeyDown(Keys.D) && oldKeys.IsKeyUp(Keys.D))
-                || (keys.IsKeyDown(Keys.Right) && oldKeys.IsKeyUp(Keys.Right)))
+            if ((keys.IsKeyDown(Keys.D) //&& oldKeys.IsKeyUp(Keys.D))
+                || (keys.IsKeyDown(Keys.Right)))) //&& oldKeys.IsKeyUp(Keys.Right)))
             {
                 right = true;
             }
             else
                 right = false;
 
-            if ((keys.IsKeyDown(Keys.A) && oldKeys.IsKeyUp(Keys.A))
-                || (keys.IsKeyDown(Keys.Left) && oldKeys.IsKeyUp(Keys.Left)))
+            if ((keys.IsKeyDown(Keys.A) //&& oldKeys.IsKeyUp(Keys.A))
+                || (keys.IsKeyDown(Keys.Left)))) //&& oldKeys.IsKeyUp(Keys.Left)))
                 left = true;
             else
                 left = false;
 
-            if ((keys.IsKeyDown(Keys.W) && oldKeys.IsKeyUp(Keys.W))
-                || (keys.IsKeyDown(Keys.Up) && oldKeys.IsKeyUp(Keys.Up)))
+            if ((keys.IsKeyDown(Keys.W) //&& oldKeys.IsKeyUp(Keys.W))
+                || (keys.IsKeyDown(Keys.Up)))) //&& oldKeys.IsKeyUp(Keys.Up)))
                 up = true;
             else
                 up = false;
 
-            if ((keys.IsKeyDown(Keys.S) && oldKeys.IsKeyUp(Keys.S))
-                || (keys.IsKeyDown(Keys.Down) && oldKeys.IsKeyUp(Keys.Down)))
+            if ((keys.IsKeyDown(Keys.S) //&& oldKeys.IsKeyUp(Keys.S))
+                || (keys.IsKeyDown(Keys.Down)))) //&& oldKeys.IsKeyUp(Keys.Down)))
                 down = true;
             else
                 down = false;
