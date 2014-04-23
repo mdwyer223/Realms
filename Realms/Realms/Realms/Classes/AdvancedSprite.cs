@@ -10,28 +10,25 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Realms
 {
-    public class AdvancedSprite : BaseSprite
+    //This class is to allow code reuse between player, enemies
+    public abstract class AdvancedSprite : Tile
     {
-        protected Location loc, oldLoc;
 
-        public AdvancedSprite(Vector2 startPos, float scaleFactor, Texture2D tex)
-            : base(startPos, scaleFactor, tex)
+        protected Rectangle drawnRec;
+        public virtual Rectangle DrawnRec
         {
+            get { return drawnRec; }
         }
 
-        public AdvancedSprite(Location loc, float scaleFactor, Texture2D tex)
-            : base(loc.Position, scaleFactor, tex)
-        {
-            this.loc = this.oldLoc = loc;
-        }
 
-        public override void Update(GameTime gameTime)
-        {
-            base.Update(gameTime);
-        }
+        public AdvancedSprite(Texture2D texture, float secondsToCrossScreen, Location startLoc)
+            : base(texture, secondsToCrossScreen, startLoc)
+        {            
+        }        
 
-        public virtual void Update(GameTime gameTime, Grid map)
+        public override void update(GameTime gameTime, Grid gr)
         {
+            base.update(gameTime, gr);
         }
     }
 }

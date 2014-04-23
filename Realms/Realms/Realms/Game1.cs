@@ -61,8 +61,8 @@ namespace Realms
         protected override void Initialize()
         {
             otherDevice = GraphicsDevice;
-            nB = new NonControlledBlock(server);
-            b = new ControlledBlock(server);
+            //nB = new NonControlledBlock(server);
+            //b = new ControlledBlock(server);
 
             world = new World(this);
             Components.Add(world);
@@ -85,8 +85,8 @@ namespace Realms
                 if (keyPress.Length > 0)
                     keyPress = keyPress.Remove(keyPress.Length - 1, 1);
             }
-            b.Update(gameTime);
-            nB.Update(gameTime);
+            //b.Update(gameTime);
+            //nB.Update(gameTime);
             base.Update(gameTime);
         }
 
@@ -97,10 +97,10 @@ namespace Realms
             base.Draw(gameTime);
 
             spriteBatch.Begin();
-            spriteBatch.DrawString(Content.Load<SpriteFont>("Normal"), connectionTest, new Vector2(5, 5), Color.White);
-            spriteBatch.DrawString(Content.Load<SpriteFont>("Normal"), keyPress, new Vector2(5, 15), Color.Red);
-            nB.Draw(spriteBatch);
-            b.Draw(spriteBatch);
+            spriteBatch.DrawString(Font.Normal, connectionTest, new Vector2(5, 5), Color.White);
+            spriteBatch.DrawString(Font.Normal, keyPress, new Vector2(5, 15), Color.Red);
+            //nB.Draw(spriteBatch);
+            //b.Draw(spriteBatch);
             spriteBatch.End();  
         }
 

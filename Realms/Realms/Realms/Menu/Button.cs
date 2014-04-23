@@ -32,7 +32,7 @@ namespace Realms
         }
 
         public Button(bool focus, Vector2 startPos, float scaleFactor, string name)
-            : base(startPos, scaleFactor, Game1.GameContent.Load<Texture2D>("Partcle"))
+            : base(Image.Particle, scaleFactor, 0 , startPos)
         {
             this.hasFocus = focus;
             this.hasHover = false;
@@ -40,47 +40,35 @@ namespace Realms
         }
 
         public Button(Vector2 startPos, float scaleFactor, string name)
-            : base(startPos, scaleFactor, Game1.GameContent.Load<Texture2D>("Partcle"))
+            : base(Image.Particle, scaleFactor, 0, startPos)
         {
             this.hasFocus = hasHover = false;
             this.label = name;
         }
 
-        public virtual void click()
+
+        public Button(Vector2 startPos, float scaleFactor, string name, SpriteFont font)
+            : base(Image.Particle, scaleFactor, 0, startPos)
         {
-            hasFocus = true;
+            this.hasFocus = hasHover = false;
+            this.label = name;
         }
 
-        public virtual void offClick()
+        public override void update(GameTime gameTime)
         {
-            hasFocus = false;
-        }
+            hasHover = this.Rec.Intersects(Input.mouseRec());
 
-        public virtual void Update(GameTime gameTime)
-        {
-            if (Input.leftMouseClick())
+            if (Input.leftMouseClick() && hasHover)
             {
-                if (this.Rec.Intersects(Input.mouseRec()))
-                {
-                    click();
-                }
-                else
-                {
-                    offClick();
-                }
-            }
-
-            if (this.Rec.Intersects(Input.mouseRec()))
-            {
-                hasHover = true;
+                click();
             }
             else
             {
-                hasHover = false;
-            }
+                offClick();
+            }   
         }
 
-        public override void Draw(SpriteBatch spriteBatch)
+        public override void draw(SpriteBatch spriteBatch)
         {
             //draw the label no matter what
             //should be just over top of the button/box itself
@@ -102,24 +90,15 @@ namespace Realms
             }
         }
 
-        public virtual void Draw(SpriteBatch spriteBatch, SpriteFont font)
+
+        public virtual void click()
         {
-            //draw with the new font
-            if (hasFocus)
-            {
+            hasFocus = true;
+        }
 
-            }
-            else
-            {
-            }
-
-            if (hasHover)
-            {
-
-            }
-            else
-            {
-            }
+        public virtual void offClick()
+        {
+            hasFocus = false;
         }
     }
 }

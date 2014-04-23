@@ -10,22 +10,21 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Realms
 {
-    public class BaseCharacter : AdvancedSprite
+    //This class allows code reuse between different ...classes
+    public abstract class BaseCharacter : AdvancedSprite
     {
-        public BaseCharacter(Location loc, float scaleFactor, Texture2D tex)
-            : base(loc, scaleFactor, tex)
+        public BaseCharacter(Texture2D texture, float secondsToCrossScreen, Location startLoc)
+            : base(texture, secondsToCrossScreen, startLoc)
         {
-
         }
 
-        public override void Update(GameTime gameTime, Grid map)
+        public override void update(GameTime gameTime, Grid map)
         {
-            position = new Vector2(loc.Column * 32, loc.Row * 32);
             if (Input.rightPressed())
             {
                 Location test = new Location(loc.Row, loc.Column);
                 test.Column++;
-                if (map.validLocation(test))
+                if (map.isValid(test))
                 {
                     loc = test;
                     //play anime right
@@ -35,33 +34,33 @@ namespace Realms
             {
                 Location test = new Location(loc.Row, loc.Column);
                 test.Column--;
-                if (map.validLocation(test))
+                if (map.isValid(test))
                 {
                     loc = test;
-                    //play anime right
+                    //play anime left
                 }
             }
             else if (Input.upPressed())
             {
                 Location test = new Location(loc.Row, loc.Column);
                 test.Row--;
-                if (map.validLocation(test))
+                if (map.isValid(test))
                 {
                     loc = test;
-                    //play anime right
+                    //play anime up
                 }
             }
             else if (Input.downPressed())
             {
                 Location test = new Location(loc.Row, loc.Column);
                 test.Row++;
-                if (map.validLocation(test))
+                if (map.isValid(test))
                 {
                     loc = test;
-                    //play anime right
+                    //play anime down
                 }
             }
-            base.Update(gameTime, map);
+            base.update(gameTime, map);
 
             oldLoc = loc;
         }

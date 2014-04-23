@@ -12,49 +12,42 @@ namespace Realms
     public class Grid
     {
         List<List<Tile>> map;
-        List<BaseSprite> everything;
-        List<AdvancedSprite> advanced;
-
         BaseCharacter player;
-
+        //TODO: list of enemies, npcs, players
         int rows, columns;
 
         public int Rows
         {
-            get{return rows;}
+            get { return rows; }
         }
 
         public int Columns
         {
-            get{return columns;}
+            get { return columns; }
         }
 
-        public Grid(int rows, int columns)
+        public Grid()
         {
-            everything = new List<BaseSprite>();
-            advanced = new List<AdvancedSprite>();
             map = new List<List<Tile>>();
 
-            player = new BaseCharacter(Location.Zero, .03f, Game1.GameContent.Load<Texture2D>("Particle"));
-
-            everything.Add(player);
-
-            this.rows = rows;
-            this.columns = columns;
+            player = new Assassin(Image.Particle, 5, Location.Zero);//TODO: remove
+         
+            this.rows = (int)(Game1.View.Height / Tile.T_HEIGHT + .5f);
+            this.columns = (int)(Game1.View.Width / Tile.T_WIDTH + .5f);            
 
             for (int y = 0; y < rows; y++)
             {
                 map.Add(new List<Tile>());
-                for (int x = 0; x<columns; x++)
+                for (int x = 0; x < columns; x++)
                 {
-                    map[y].Add(new Tile(new Location(y,x), Game1.GameContent.Load<Texture2D>("Particle")));
+                    map[y].Add(new Tile(Image.Particle, 0, new Location(y, x)));
                 }
             }
         }
 
-        public void Update(GameTime gameTime)
+        public void update(GameTime gameTime)
         {
-            player.Update(gameTime, this);
+            player.update(gameTime, this);
 
             for (int y = 0; y < rows; y++)
             {
@@ -62,13 +55,13 @@ namespace Realms
                 {
                     if (map[y][x] != null)
                     {
-                        map[y][x].Update(gameTime, everything);
+                        map[y][x].update(gameTime, this);
                     }
                 }
             }
         }
 
-        public void Draw(SpriteBatch spriteBatch)
+        public void draw(SpriteBatch spriteBatch)
         {
             for (int y = 0; y < rows; y++)
             {
@@ -76,30 +69,58 @@ namespace Realms
                 {
                     if (map[y][x] != null)
                     {
-                        map[y][x].Draw(spriteBatch);
+                        map[y][x].draw(spriteBatch);
                     }
                 }
             }
 
-            player.Draw(spriteBatch);
+            player.draw(spriteBatch);
         }
 
-        public bool validLocation(Location loc)
+        public Tile[] getObjects()
+        {
+            List<Tile> objs = new List<Tile>();
+            for (int y = 0; y < rows; y++)
+            {
+                for (int x = 0; x < columns; x++)
+                {
+                    if (map[y][x].GetType() != typeof(Tile) && map[y][x].Open)
+                        objs.Add(map[y][x]);
+                }
+            }
+            return objs.ToArray();
+        }
+
+        public bool isValid(Location loc)
         {
             if (loc.Row < 0 || loc.Column < 0)
                 return false;
             else if (loc.Row > Rows || loc.Column > Columns)
                 return false;
-            for (int y = 0; y < rows; y++)
-            {
-                for (int x = 0; x < columns; x++)
-                {
-                    if (map[y][x].Location == loc && !map[y][x].Open)
-                        return false;
-                }
-            }
+            if (!map[loc.Row][loc.Column].Open)
+                return false;             
 
             return true;
         }
+
+        public Tile get(Location loc)
+        {
+            if (loc.Row < 0 || loc.Column < 0)
+                return null;
+            else if (loc.Row > Rows || loc.Column > Columns)
+                return null;
+
+            return map[loc.Row][loc.Column];
+        }
+
+        public void add(Location loc, Tile obj)
+        {
+            if (!isValid(loc))
+                return;
+
+            map[loc.Row][loc.Column] = obj;
+        }
+
+
     }
 }

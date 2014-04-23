@@ -114,6 +114,8 @@
   <ItemGroup>
     <Compile Include="Blocks.cs" />
     <Compile Include="Classes\AdvancedSprite.cs" />
+    <Compile Include="Classes\AnimatedSprite.cs" />
+    <Compile Include="Classes\Assassin.cs" />
     <Compile Include="Classes\BaseCharacter.cs" />
     <Compile Include="Classes\BaseSprite.cs" />
     <Compile Include="Classes\Grid.cs" />
@@ -121,6 +123,8 @@
     <Compile Include="Classes\Tile.cs" />
     <Compile Include="Components\MainMenu.cs" />
     <Compile Include="Components\World.cs" />
+    <Compile Include="Font.cs" />
+    <Compile Include="Image.cs" />
     <Compile Include="Input.cs" />
     <Compile Include="Menu\Button.cs" />
     <Compile Include="Menu\Textbox.cs" />

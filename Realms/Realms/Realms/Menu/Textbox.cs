@@ -28,7 +28,7 @@ namespace Realms
             this.label = name;
         }
 
-        public override void Update(GameTime gameTime)
+        public override void update(GameTime gameTime)
         {
             if (hasFocus)
             {
@@ -41,10 +41,10 @@ namespace Realms
                     }
                 }
             }
-            base.Update(gameTime);
+            base.update(gameTime);
         }
 
-        public override void Draw(SpriteBatch spriteBatch)
+        public override void draw(SpriteBatch spriteBatch)
         {
             if (hasFocus)
             {
@@ -54,7 +54,7 @@ namespace Realms
             {
                 //draw textbox normally
             }
-            base.Draw(spriteBatch);
+            base.draw(spriteBatch);
         }
     }
 }

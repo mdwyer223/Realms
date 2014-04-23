@@ -10,45 +10,37 @@ namespace Realms
 {
     public class Location
     {
-        Vector2 position;
-        int row, column;
 
         public static Location Zero
         {
             get { return new Location(0, 0); }
         }
 
-        public Vector2 Position
-        {
-            get { return position; }
-        }
-
         public int Row
         {
-            get { return row; }
-            set { row = value; }
+            get;
+            set;
         }
 
         public int Column
         {
-            get { return column; }
-            set { column = value; }
+            get;
+            set;
         }
 
         public Location(int row, int column)
         {
-            this.row = row;
-            this.column = column;
+            if(row >= 0)
+                this.Row = row;
+
+            if(column >= 0)
+                this.Column = column;
         }
 
         public override bool Equals(object obj)
         {
             Location oppLoc = (Location)obj;
-
-            if (oppLoc.Row == this.Row && oppLoc.Column == this.Column)
-                return true;
-            else
-                return false;
+            return oppLoc.Row == this.Row && oppLoc.Column == this.Column;            
         }
     }
 }

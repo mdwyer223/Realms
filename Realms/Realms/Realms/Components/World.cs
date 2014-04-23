@@ -23,20 +23,20 @@ namespace Realms
         public World(Game game)
             : base(game)
         {
-            g = new Grid(50, 50);
+            g = new Grid();
             spriteBatch = new SpriteBatch(game.GraphicsDevice);
         }
-
+        
         public override void Update(GameTime gameTime)
         {
-            g.Update(gameTime);
+            g.update(gameTime);
             base.Update(gameTime);
         }
 
         public override void Draw(GameTime gameTime)
         {
             spriteBatch.Begin();
-            g.Draw(spriteBatch);
+            g.draw(spriteBatch);
             spriteBatch.End();
             base.Draw(gameTime);
         }

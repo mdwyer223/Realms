@@ -9,94 +9,99 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Realms
 {
+    //This class used to draw an image on the screen
     public class BaseSprite
     {
-        protected Rectangle rec;
-        protected Vector2 position;
         protected Texture2D texture;
         protected Color color;
 
-        public bool IsDead
+        protected Vector2 velocity;
+        public Vector2 Velocity
         {
-            get;
-            protected set;
+            get { return velocity; }
+            protected set { velocity = value; }
         }
 
-        public bool IsVisible
+        protected Rectangle rec;
+        public Rectangle Rec
         {
-            get;
-            protected set;
+            get { return rec; }
+            protected set { rec = value; }
         }
 
         public Vector2 Position
         {
-            get { return position; }
+            get { return new Vector2(Rec.X, Rec.Y); }
+            protected set
+            {
+                rec.X = (int)(value.X + .5);
+                rec.Y = (int)(value.Y + .5);
+            }
         }
 
-        public Rectangle Rec
+        public Vector2 Center
         {
-            get { return new Rectangle((int)Position.X, (int)Position.Y, rec.Width, rec.Height); }
+            get { return new Vector2(Rec.Center.X, Rec.Center.Y); }
         }
 
-        public BaseSprite(Vector2 startPos, float scaleFactor, Texture2D tex)
+        public virtual bool IsVisible
         {
-            IsDead = false;
-            IsVisible = true;
-            this.position = startPos;
-            this.texture = tex;//check to see if the texture is null first
+            get;
+            protected set;
+        }
+
+        public int Speed
+        {
+            get;
+            private set;
+        }
+
+        public BaseSprite(Texture2D texture, float scaleFactor, float secondsToCrossScreen, Vector2 startPos)
+        {
+            this.texture = texture;
             color = Color.White;
-
-
-            if (texture != null)
-            {
-                rec.Width = (int)(Game1.View.Width * scaleFactor + 0.5f);
-                float aspectRatio = (float)texture.Width / texture.Height;
-                rec.Height = (int)(rec.Width / aspectRatio + 0.5f);
-            }
-        }
-
-        public BaseSprite(Vector2 startPos, float scaleFactor, Texture2D tex, Color color)
-        {
-            IsDead = false;
             IsVisible = true;
-            this.position = startPos;
-            this.texture = tex;//check to see if the texture is null first
-            this.color = color;
 
+            int inDisplayWidth = Game1.View.Width;
 
             if (texture != null)
             {
-                rec.Width = (int)(Game1.View.Width * scaleFactor + 0.5f);
+                rec.Width = (int)(inDisplayWidth * scaleFactor + 0.5f);
                 float aspectRatio = (float)texture.Width / texture.Height;
-                rec.Height = (int)(rec.Width / aspectRatio + 0.5f);
+                rec.Height = (int)(Rec.Width / aspectRatio + 0.5f);
             }
+
+            // Shorthand condition logic
+            Speed = (secondsToCrossScreen > 0) ? (int)(inDisplayWidth / (secondsToCrossScreen * 60)) : 0;
+
+            Position = startPos;
         }
 
-        public virtual void Update(GameTime gameTime)
+        public virtual void update(GameTime gameTime)
         {
         }
 
-        public virtual void Draw(SpriteBatch spriteBatch)
+        public virtual void draw(SpriteBatch spriteBatch)
         {
             if (IsVisible)
-            {
                 spriteBatch.Draw(texture, Rec, color);
-            }
         }
 
-        public bool isColliding(Rectangle target)
+
+
+        public float measureDis(Vector2 point1, Vector2 point2)
         {
-            return Rec.Intersects(target);
+            return (float)Math.Sqrt(Math.Pow(point1.X - point2.X, 2) + Math.Pow(point1.Y - point2.Y, 2));
         }
 
-        public float measureDistance(Vector2 point1, Vector2 point2)
+        public float measureDis(Vector2 point1)
         {
-            return (float)Math.Sqrt((Math.Pow(point1.X - point2.X, 2)) + (Math.Pow(point1.Y - point2.Y, 2)));
+            return measureDis(this.Position, point1);
         }
 
-        public float measureDistance(Vector2 point1)
+        public bool isColliding(Rectangle inRec)
         {
-            return measureDistance(this.Position, point1);
+            return this.Rec.Intersects(inRec);
         }
     }
 }
