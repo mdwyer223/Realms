@@ -12,14 +12,17 @@ using Microsoft.Xna.Framework.Media;
 
 namespace Realms
 {
-    public enum MenuState
+    public class PauseMenu : Microsoft.Xna.Framework.DrawableGameComponent
     {
-        LOGIN, CREATE_ACCOUNT, OPTIONS, SELECT
-    }
+        enum PauseState
+        {
+            MAIN, SOCIAL, ITEMS, LIMIT, STATS, MATERIA, EQUIPMENT //Materia is just a place holder for gems
+        }
 
-    public class MainMenu : Microsoft.Xna.Framework.DrawableGameComponent
-    {
-        public MainMenu(Game game)
+        PauseState state = PauseState.MAIN;
+        SpriteBatch spriteBatch;
+
+        public PauseMenu(Game game)
             : base(game)
         {
         }

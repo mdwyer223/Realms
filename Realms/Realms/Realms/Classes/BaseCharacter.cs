@@ -13,9 +13,45 @@ namespace Realms
     //This class allows code reuse between different ...classes
     public abstract class BaseCharacter : AdvancedSprite
     {
-        public BaseCharacter(Texture2D texture, float secondsToCrossScreen, Location startLoc)
+        protected Stats stats;
+        protected Equips equips;
+        protected Inventory invent;
+        protected int level = 1, exp = 0, nextLevel;
+
+        public Stats Stats
+        {
+            get {
+                stats = new Stats(this);
+                return stats; 
+            }
+        }
+
+        public Equips Equipment
+        {
+            get { return equips; }
+        }
+
+        public Inventory Inventory
+        {
+            get { return invent; }
+        }
+
+        public int Level
+        {
+            get { return level; }
+        }
+
+        public int Experience
+        {
+            get { return exp; }
+        }
+
+        public BaseCharacter(Texture2D texture, float secondsToCrossScreen, Location startLoc, int level)
             : base(texture, secondsToCrossScreen, startLoc)
         {
+            color = Color.Purple;
+            this.level = level;
+            equips = new Equips();
         }
 
         public override void update(GameTime gameTime, Grid map)
@@ -26,7 +62,7 @@ namespace Realms
                 test.Column++;
                 if (map.isValid(test))
                 {
-                    loc = test;
+                    Location = test;
                     //play anime right
                 }
             }
@@ -36,7 +72,7 @@ namespace Realms
                 test.Column--;
                 if (map.isValid(test))
                 {
-                    loc = test;
+                    Location = test;
                     //play anime left
                 }
             }
@@ -46,7 +82,7 @@ namespace Realms
                 test.Row--;
                 if (map.isValid(test))
                 {
-                    loc = test;
+                    Location = test;
                     //play anime up
                 }
             }
@@ -56,13 +92,67 @@ namespace Realms
                 test.Row++;
                 if (map.isValid(test))
                 {
-                    loc = test;
+                    Location = test;
                     //play anime down
                 }
             }
-            base.update(gameTime, map);
 
             oldLoc = loc;
+        }
+
+        public Stats calcStats()
+        {
+            //calc base stats first
+            stats = new Stats(this);
+
+            //then add equips and skill trees
+
+            return stats;
+        }
+
+        public void equipWeapon(Weapon newWep)
+        {
+            Weapon temp = equips.wep;
+            equips.wep = newWep;
+            List<Item> inventList = invent.ItemList;
+            for (int i = 0; i < inventList.Count; i++)
+            {
+                if (inventList[i] == newWep)
+                {
+                    inventList[i] = temp;
+                    break;
+                }
+            }
+        }
+
+        public void equipArmor(Armor newArmor)
+        {
+            Armor temp = equips.armor;
+            equips.armor = newArmor;
+            List<Item> inventList = invent.ItemList;
+            for (int i = 0; i < inventList.Count; i++)
+            {
+                if (inventList[i] == newArmor)
+                {
+                    inventList[i] = temp;
+                    break;
+                }
+            }
+        }
+
+        public void equipAccessory(Accessory newAccessory)
+        {
+            Accessory temp = equips.accessory;
+            equips.accessory = newAccessory;
+            List<Item> inventList = invent.ItemList;
+            for (int i = 0; i < inventList.Count; i++)
+            {
+                if (inventList[i] == newAccessory)
+                {
+                    inventList[i] = temp;
+                    break;
+                }
+            }
         }
     }
 }

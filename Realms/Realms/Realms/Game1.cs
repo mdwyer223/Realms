@@ -13,6 +13,11 @@ using MySql.Data.MySqlClient;
 
 namespace Realms
 {
+    public enum GameState
+    {
+        PAUSE, MAINMENU, PLAYING, DEATH, BATTLE
+    }
+
     public class Game1 : Microsoft.Xna.Framework.Game
     {
         GraphicsDeviceManager graphics;
@@ -20,6 +25,8 @@ namespace Realms
 
         Server server;
         World world;
+        MainMenu mainMenu;
+        PauseMenu pauseMenu;
 
         string connectionTest = "", keyPress = "";
 
@@ -36,6 +43,12 @@ namespace Realms
         public static Viewport View
         {
             get { return otherDevice.Viewport; }
+        }
+
+        static GameState mainGameState = GameState.PLAYING;
+        public static GameState State
+        {
+            get { return mainGameState; }
         }
 
         static bool active = true;
@@ -66,8 +79,12 @@ namespace Realms
 
             world = new World(this);
             Components.Add(world);
-            world.Enabled = world.Visible = true;
 
+            mainMenu = new MainMenu(this);
+            Components.Add(mainMenu);
+
+            pauseMenu = new PauseMenu(this);
+            Components.Add(pauseMenu);
             base.Initialize();
         }
 
@@ -79,14 +96,36 @@ namespace Realms
         protected override void Update(GameTime gameTime)
         {
             Input.Update();
-            keyPress += Input.getRecentKeys();
-            if (Input.backPressed())
+
+            if (mainGameState == GameState.PLAYING)
             {
-                if (keyPress.Length > 0)
-                    keyPress = keyPress.Remove(keyPress.Length - 1, 1);
+                world.Enabled = world.Visible = true;
+                mainMenu.Enabled = mainMenu.Visible = false;
+                pauseMenu.Enabled = pauseMenu.Visible = false;
             }
-            //b.Update(gameTime);
-            //nB.Update(gameTime);
+            else if (mainGameState == GameState.MAINMENU)
+            {
+                mainMenu.Enabled = mainMenu.Visible = true;
+                world.Enabled = world.Visible = false;
+                pauseMenu.Enabled = pauseMenu.Visible = false;
+            }
+            else if (mainGameState == GameState.DEATH)
+            {
+                // not sure here.. gotta figure it out
+            }
+            else if (mainGameState == GameState.PAUSE)
+            {
+                pauseMenu.Enabled = pauseMenu.Visible = true;
+                world.Enabled = world.Visible = false;
+                mainMenu.Enabled = mainMenu.Visible = false;
+            }
+
+            //keyPress += Input.getRecentKeys();
+            //if (Input.backPressed())
+            //{
+                //if (keyPress.Length > 0)
+                    //keyPress = keyPress.Remove(keyPress.Length - 1, 1);
+            //}
             base.Update(gameTime);
         }
 
@@ -99,6 +138,7 @@ namespace Realms
             spriteBatch.Begin();
             spriteBatch.DrawString(Font.Normal, connectionTest, new Vector2(5, 5), Color.White);
             spriteBatch.DrawString(Font.Normal, keyPress, new Vector2(5, 15), Color.Red);
+            spriteBatch.Draw(Image.Cursor, Input.mouseRec(), Color.White);
             //nB.Draw(spriteBatch);
             //b.Draw(spriteBatch);
             spriteBatch.End();  
@@ -109,6 +149,10 @@ namespace Realms
             active = !active;
         }
 
+        public static void changeState(GameState newState)
+        {
+            mainGameState = newState;
+        }
         
     }
 }

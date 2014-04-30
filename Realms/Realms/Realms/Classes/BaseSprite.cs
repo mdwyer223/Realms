@@ -32,7 +32,7 @@ namespace Realms
         public Vector2 Position
         {
             get { return new Vector2(Rec.X, Rec.Y); }
-            protected set
+            set
             {
                 rec.X = (int)(value.X + .5);
                 rec.Y = (int)(value.Y + .5);

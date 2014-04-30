@@ -9,6 +9,16 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Realms
 {
+    public enum Zone
+    {
+
+    }
+
+    public enum Planet
+    {
+
+    }
+
     public class Grid
     {
         List<List<Tile>> map;
@@ -30,7 +40,7 @@ namespace Realms
         {
             map = new List<List<Tile>>();
 
-            player = new Assassin(Image.Particle, 5, Location.Zero);//TODO: remove
+            player = new Assassin(Image.Particle, 5, Location.Zero, 1);//TODO: remove
          
             this.rows = (int)(Game1.View.Height / Tile.T_HEIGHT + .5f);
             this.columns = (int)(Game1.View.Width / Tile.T_WIDTH + .5f);            
@@ -95,9 +105,9 @@ namespace Realms
         {
             if (loc.Row < 0 || loc.Column < 0)
                 return false;
-            else if (loc.Row > Rows || loc.Column > Columns)
+            else if (loc.Row >= Rows || loc.Column >= Columns)
                 return false;
-            if (!map[loc.Row][loc.Column].Open)
+            else if (!map[loc.Row][loc.Column].Open)
                 return false;             
 
             return true;

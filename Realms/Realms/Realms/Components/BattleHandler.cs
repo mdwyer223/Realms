@@ -10,23 +10,21 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 
 
-namespace Realms
+namespace Realms.Components
 {
-    public enum MenuState
+    public class BattleHandler : Microsoft.Xna.Framework.DrawableGameComponent
     {
-        LOGIN, CREATE_ACCOUNT, OPTIONS, SELECT
-    }
+        SpriteBatch spriteBatch;
+        Battle b;
 
-    public class MainMenu : Microsoft.Xna.Framework.DrawableGameComponent
-    {
-        public MainMenu(Game game)
+        public BattleHandler(Game game)
             : base(game)
         {
+            spriteBatch = new SpriteBatch(game.GraphicsDevice);   
         }
 
         public override void Initialize()
         {
-
             base.Initialize();
         }
 

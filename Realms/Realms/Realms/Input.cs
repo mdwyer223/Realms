@@ -14,6 +14,7 @@ namespace Realms
         protected static KeyboardState keys, oldKeys;
         protected static MouseState mouse, oldMouse;
         protected static string currentString;
+        protected static int mouseWidth = 15, mouseHeight = 15;
 
         private static bool actionBar, right, left, up, down, escape, back, leftClick, rightClick;
   
@@ -230,7 +231,7 @@ namespace Realms
 
         public static Rectangle mouseRec()
         {
-            return (new Rectangle((int)mousePos().X, (int)mousePos().Y, 10, 10));
+            return (new Rectangle((int)mousePos().X, (int)mousePos().Y, mouseWidth, mouseHeight));
         }
 
         public static void Update()

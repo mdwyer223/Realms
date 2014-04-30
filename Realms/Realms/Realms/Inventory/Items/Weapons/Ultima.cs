@@ -9,12 +9,15 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Realms
 {
-    public class Assassin : BaseCharacter
+    public class Ultima : Weapon
     {
-        public Assassin(Texture2D texture, float secondsToCrossScreen, Location startLoc, int level)
-            : base(texture, secondsToCrossScreen, startLoc, level)
+        public Ultima()
+            : base(null, 0.0f, "Ultima")
         {
-            equips.wep = new Ultima();
+            damage = 9999;
+            stats.increaseCritChance(75);
+            stats.increaseStrength(125);
+            stats.increaseSpeed(75);
         }
     }
 }
