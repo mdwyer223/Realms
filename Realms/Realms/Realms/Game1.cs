@@ -27,6 +27,7 @@ namespace Realms
         World world;
         MainMenu mainMenu;
         PauseMenu pauseMenu;
+        BattleHandler battleComp;
 
         string connectionTest = "", keyPress = "";
 
@@ -49,6 +50,12 @@ namespace Realms
         public static GameState State
         {
             get { return mainGameState; }
+        }
+
+        static Camera2D camera;
+        public static Camera2D Camera
+        {
+            get { return camera; }
         }
 
         static bool active = true;
@@ -85,6 +92,12 @@ namespace Realms
 
             pauseMenu = new PauseMenu(this);
             Components.Add(pauseMenu);
+
+            battleComp = new BattleHandler(this);
+            Components.Add(battleComp);
+
+            camera = new Camera2D(this);
+            Components.Add(camera);
             base.Initialize();
         }
 
@@ -102,12 +115,14 @@ namespace Realms
                 world.Enabled = world.Visible = true;
                 mainMenu.Enabled = mainMenu.Visible = false;
                 pauseMenu.Enabled = pauseMenu.Visible = false;
+                battleComp.Visible = battleComp.Enabled = false;
             }
             else if (mainGameState == GameState.MAINMENU)
             {
                 mainMenu.Enabled = mainMenu.Visible = true;
                 world.Enabled = world.Visible = false;
                 pauseMenu.Enabled = pauseMenu.Visible = false;
+                battleComp.Visible = battleComp.Enabled = false;
             }
             else if (mainGameState == GameState.DEATH)
             {
@@ -118,6 +133,19 @@ namespace Realms
                 pauseMenu.Enabled = pauseMenu.Visible = true;
                 world.Enabled = world.Visible = false;
                 mainMenu.Enabled = mainMenu.Visible = false;
+                battleComp.Visible = battleComp.Enabled = false;
+            }
+            else if (mainGameState == GameState.BATTLE)
+            {
+                battleComp.Visible = battleComp.Enabled = true;
+                world.Enabled = world.Visible = false;
+                mainMenu.Enabled = mainMenu.Visible = false;
+                pauseMenu.Enabled = pauseMenu.Visible = false;
+            }
+
+            if (Input.escapePressed())
+            {
+                Game1.mainGameState = GameState.BATTLE;
             }
 
             //keyPress += Input.getRecentKeys();
@@ -134,6 +162,7 @@ namespace Realms
             GraphicsDevice.Clear(Color.Black);
 
             base.Draw(gameTime);
+
 
             spriteBatch.Begin();
             spriteBatch.DrawString(Font.Normal, connectionTest, new Vector2(5, 5), Color.White);
