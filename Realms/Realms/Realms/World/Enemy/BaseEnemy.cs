@@ -14,6 +14,7 @@ namespace Realms
         int tier;
         EnemyType type;
         Stats stats;
+        Random rand;
 
         public Stats Stats
         {
@@ -29,6 +30,28 @@ namespace Realms
         {
             this.tier = tier;
             this.type = type;
+            rand = new Random();
+        }
+
+        public void battled()
+        {
+            IsDead = true;
+            IsVisible = false;
+        }
+
+        public List<BattleEnemy> spawnEnemies()
+        {
+            //depends on zone and everything 
+            int numEnemies = rand.Next(1, 3);
+
+            List<BattleEnemy> enemies = new List<BattleEnemy>();
+            for (int i = 0; i < numEnemies; i++)
+            {
+                BaseEnemy e = new BaseEnemy(Image.Particle, 0, Location.Zero, type, tier);
+                enemies.Add(new BattleEnemy(e.texture, .07f, e));
+            }
+
+            return enemies;
         }
     }
 }

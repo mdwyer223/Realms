@@ -89,7 +89,7 @@ namespace Realms
                 bool intersect = false; 
                 for (int i = 0; i < objects.Length; i++)
                 {
-                    if (objects[i] != null && !objects[i].IsDead)
+                    if (objects[i] != null && !objects[i].IsDead && objects[i].GetType() != typeof(TripWire))
                     {
                         if (this.isColliding(objects[i].Rec))
                         {

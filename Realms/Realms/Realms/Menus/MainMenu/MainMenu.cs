@@ -12,11 +12,6 @@ using Microsoft.Xna.Framework.Media;
 
 namespace Realms
 {
-    public enum MenuState
-    {
-        LOGIN, CREATE_ACCOUNT, OPTIONS, SELECT
-    }
-
     public class MainMenu : Microsoft.Xna.Framework.DrawableGameComponent
     {
         public MainMenu(Game game)

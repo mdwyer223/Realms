@@ -9,11 +9,21 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Realms
 {
-    public class Font
+    public class Fonts
     {
         public static SpriteFont Normal
         {
             get { return Game1.GameContent.Load<SpriteFont>("Normal"); }
+        }
+
+        public static SpriteFont BattleMenu
+        {
+            get { return Game1.GameContent.Load<SpriteFont>("BattleFonts/BattleMenu"); }
+        }
+
+        public static SpriteFont BattleMessage
+        {
+            get { return Game1.GameContent.Load<SpriteFont>("BattleFonts/BattleMessage"); }
         }
 
         // other Spritefonts...

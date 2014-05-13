@@ -11,10 +11,19 @@ namespace Realms
 {
     public class Assassin : BaseCharacter
     {
-        public Assassin(Texture2D texture, float secondsToCrossScreen, Location startLoc, int level)
-            : base(texture, secondsToCrossScreen, startLoc, level)
+        public Assassin(Texture2D texture, Location startLoc, int level)
+            : base(texture, 5, startLoc, level)
         {
-            equips.wep = new WoodenSword();
+            equips.wep = new MasterSword();
+            equips.armor = new Cloth();
+
+            equips.wep.equipMateria(new DoubleStrike(5), 0, this);
+            equips.armor.equipMateria(new Fire(5), 0, this);
+        }
+
+        public override void update(GameTime gameTime, Grid map)
+        {            
+            base.update(gameTime, map);
         }
     }
 }

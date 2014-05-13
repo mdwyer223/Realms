@@ -16,14 +16,13 @@ namespace Realms
     {
         SpriteBatch spriteBatch;
         Battle b;
+        Grid currentGrid;
 
         public BattleHandler(Game game)
             : base(game)
         {
             spriteBatch = new SpriteBatch(game.GraphicsDevice);
-            Assassin a = new Assassin(Image.Particle, 5, Location.Zero, 10);
-            BattleCharacter bc = new BattleCharacter(Image.Particle, .07f, a);
-            b = new Battle(bc);
+            //b = new Battle(bc);
         }
 
         public override void Initialize()
@@ -33,16 +32,37 @@ namespace Realms
 
         public override void Update(GameTime gameTime)
         {
+            if (b == null)
+            {
+                Game1.changeState(GameState.PLAYING);
+                return;
+            }
             b.update(gameTime);
+            if (b.Over)
+            {
+                Game1.changeWorld(currentGrid);
+            }
             base.Update(gameTime);
         }
 
         public override void Draw(GameTime gameTime)
         {
             spriteBatch.Begin();
-            b.draw(spriteBatch);
+
+            if (b != null)
+            {
+                b.draw(spriteBatch);
+            }
+
             spriteBatch.End();
+
             base.Draw(gameTime);
+        }
+
+        public void activateBattle(Battle b, Grid g)
+        {
+            this.b = b;
+            this.currentGrid = g;
         }
     }
 }

@@ -16,26 +16,47 @@ namespace Realms
         protected static string currentString;
         protected static int mouseWidth = 15, mouseHeight = 15;
 
-        private static bool actionBar, right, left, up, down, escape, back, leftClick, rightClick;
+        private static bool actionBar, right, left, up, down, escape, back, leftClick, rightClick,
+            rightHit, leftHit, upHit, downHit;
   
-        public static bool rightPressed()
+        public static bool rightDown()
         {
             return right;
         }
 
-        public static bool leftPressed()
+        public static bool leftDown()
         {
             return left;
         }
 
-        public static bool upPressed()
+        public static bool upDown()
         {
             return up;
         }
 
-        public static bool downPressed()
+        public static bool downDown()
         {
             return down;
+        }
+
+        public static bool rightPressed()
+        {
+            return rightHit;
+        }
+
+        public static bool leftPressed()
+        {
+            return leftHit;
+        }
+
+        public static bool upPressed()
+        {
+            return upHit;
+        }
+
+        public static bool downPressed()
+        {
+            return downHit;
         }
 
         public static bool escapePressed()
@@ -229,9 +250,15 @@ namespace Realms
             return (new Vector2(mouse.X, mouse.Y));
         }
 
-        public static Rectangle mouseRec()
+        public static Rectangle mouseDrawnRec()
         {
             return (new Rectangle((int)mousePos().X, (int)mousePos().Y, mouseWidth, mouseHeight));
+        }
+
+        public static Rectangle mouseCollisionRec()
+        {
+            return (new Rectangle((int)(mousePos().X - Game1.Camera.Origin.X + Game1.Camera.Position.X), 
+                (int)(mousePos().Y - Game1.Camera.Origin.Y + Game1.Camera.Position.Y), mouseWidth, mouseHeight));
         }
 
         public static void Update()
@@ -264,6 +291,32 @@ namespace Realms
                 down = true;
             else
                 down = false;
+
+            if ((keys.IsKeyDown(Keys.D) && oldKeys.IsKeyUp(Keys.D))
+                || (keys.IsKeyDown(Keys.Right) && oldKeys.IsKeyUp(Keys.Right)))
+            {
+                rightHit = true;
+            }
+            else
+                rightHit = false;
+
+            if ((keys.IsKeyDown(Keys.A) && oldKeys.IsKeyUp(Keys.A))
+                || (keys.IsKeyDown(Keys.Left) && oldKeys.IsKeyUp(Keys.Left)))
+                leftHit = true;
+            else
+                leftHit = false;
+
+            if ((keys.IsKeyDown(Keys.W) && oldKeys.IsKeyUp(Keys.W))
+                || (keys.IsKeyDown(Keys.Up) && oldKeys.IsKeyUp(Keys.Up)))
+                upHit = true;
+            else
+                upHit = false;
+
+            if ((keys.IsKeyDown(Keys.S) && oldKeys.IsKeyUp(Keys.S))
+                || (keys.IsKeyDown(Keys.Down) && oldKeys.IsKeyUp(Keys.Down)))
+                downHit = true;
+            else
+                downHit = false;
 
             if ((keys.IsKeyDown(Keys.Escape) && oldKeys.IsKeyUp(Keys.Escape)))
                 escape = true;

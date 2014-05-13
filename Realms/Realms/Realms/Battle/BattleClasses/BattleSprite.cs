@@ -14,6 +14,7 @@ namespace Realms
         protected Random rand;
         protected Stats stats;
         protected Rectangle healthBar, backHealth;
+        protected List<BattleMessage> messages;
 
         protected const int MAX_WAIT = 4;
         protected float wait, waitTimer, maxHP, currentHP,
@@ -27,6 +28,47 @@ namespace Realms
             protected set;
         }
 
+        public Rectangle HealthBar
+        {
+            get
+            {
+                healthBar.Height = backHealth.Height = healthHeight;
+                backHealth.Width = healthWidth;
+                healthBar.Width = (int)(healthWidth * (currentHP / maxHP));
+                return healthBar;
+            }
+        }
+
+        public Rectangle BackHealthBar
+        {
+            get
+            {
+                backHealth.Height = healthHeight;
+                backHealth.Width = healthWidth;
+                return backHealth;
+            }
+        }
+
+        public float HP
+        {
+            get { return currentHP; }
+        }
+
+        public float MaxHP
+        {
+            get { return maxHP; }
+        }
+
+        public float MP
+        {
+            get { return currentMP; }
+        }
+
+        public float MaxMP
+        {
+            get { return maxMP; }
+        }
+
         public BattleSprite(Texture2D texture, float scaleFactor, Stats statSheet)
             : base(texture, scaleFactor, 0, Vector2.Zero)
         {
@@ -34,6 +76,7 @@ namespace Realms
 
             this.stats = statSheet;
             rand = new Random();
+            messages = new List<BattleMessage>();
 
             maxHP = currentHP = stats.Health;
             maxMP = currentMP = stats.Mana;
@@ -41,18 +84,28 @@ namespace Realms
 
         public virtual void update(GameTime gameTime, List<BattleSprite> battleField)
         {
-            healthBar.X = backHealth.X = (int)this.Position.X;
-            healthBar.Y = backHealth.Y = 400;
-            healthBar.Height = backHealth.Height = healthHeight;
-            backHealth.Width = healthWidth;
-            healthBar.Width = (int)(healthWidth * (currentHP / maxHP));
+            for (int i = 0; i < messages.Count; i++)
+            {
+                if (messages[i] != null)
+                {
+                    messages[i].update(gameTime);
+                    if (messages[i].Over)
+                        messages.RemoveAt(i);
+                }
+            }
         }
 
         public override void draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(Image.Particle, backHealth, Color.Red);
-            spriteBatch.Draw(Image.Particle, healthBar, Color.DarkGreen);
             base.draw(spriteBatch);
+
+            foreach (BattleMessage m in messages)
+            {
+                if (m != null)
+                {
+                    m.draw(spriteBatch);
+                }
+            }
         }
 
         public virtual void damage(Stats otherStats, Weapon wep)//may need overloads for different spells
@@ -61,10 +114,11 @@ namespace Realms
             float dodgeChance = ((this.stats.Dodge - (otherStats.Accuracy) * 2) / 10f);
             if (dodgeChance < 0)
                 dodgeChance = 0;
-            float dodgeRoll = (float)rand.NextDouble();
+            float dodgeRoll = (float)rand.NextDouble() * 10;
 
             if (dodgeRoll < dodgeChance)
             {
+                messages.Add(new BattleMessage("Dodged!", Color.White, this.Position));
                 return;
             }
                        
@@ -77,16 +131,47 @@ namespace Realms
                 totalDamage *= wep.CritDamagePercent;
             }
 
-            float defendedDamge = totalDamage * (stats.Defense / (stats.MaxDefense * .75f));
+            float defendedDamge = totalDamage * (stats.Defense / (stats.MaxDefense * 1.25f));
             totalDamage -= defendedDamge;
-
+            messages.Add(new BattleMessage("" + totalDamage, Color.Red, this.Position));
             currentHP -= (int)totalDamage;
             if (currentHP < 0)
             {
                 currentHP = 0;
                 IsDead = true;
             }
-            
+        }
+
+        public virtual void magicDamage(Stats otherStats, Materia materia)
+        {
+            float dodgeChance = ((this.stats.Dodge - (otherStats.Accuracy) * 2) / 10f);
+            if (dodgeChance < 0)
+                dodgeChance = 0;
+            float dodgeRoll = (float)rand.NextDouble() * 10;
+
+            if (dodgeRoll < dodgeChance)
+            {
+                messages.Add(new BattleMessage("Dodged!", Color.White, this.Position));
+                return;
+            }
+
+            float totalDamage = ((otherStats.MagicStrength * materia.SpellDamage));
+            float critChance = (otherStats.CritChance / 100f);
+            float critRoll = (float)rand.NextDouble();
+
+            //if (critRoll < critChance)
+            //{
+                //totalDamage *= wep.CritDamagePercent;
+            //}
+            float defendedDamge = totalDamage * (stats.Defense / (stats.MaxDefense * 1.25f));
+            totalDamage -= defendedDamge;
+            messages.Add(new BattleMessage("" + totalDamage, Color.Red, this.Position));
+            currentHP -= (int)totalDamage;
+            if (currentHP < 0)
+            {
+                currentHP = 0;
+                IsDead = true;
+            }
         }
     }
 }

@@ -36,13 +36,20 @@ namespace Realms
             get { return stats; }
         }
 
+        public List<Materia> MateriaList
+        {
+            get { return materia; }
+        }
+
         public Weapon(Texture2D texture, float scaleFactor, string name)
             : base(texture, scaleFactor, name)
         {
             stats = new Stats(null);
+            materia = new List<Materia>();
             //update from the server
             //stats.increaseStrength(50);
-            damage = 10;
+            damage = 1;
+            critDamagePercent = 1.0f;
 
             options[0] = "Equip";
         }
@@ -57,6 +64,24 @@ namespace Realms
             }
 
             base.chooseOption(option, player);
+        }
+
+        public void equipMateria(Materia newMateria, int slot, BaseCharacter c)
+        {
+            if (materia.Count > MaxSlots)
+                return;
+
+            unequipMateria(slot, c);
+            materia.Add(newMateria);
+        }
+
+        public void unequipMateria(int index, BaseCharacter character)
+        {
+            if (materia.Count == 0)
+                return;
+
+            character.Inventory.addItem(materia[index]);
+            materia.RemoveAt(index);
         }
     }
 }

@@ -65,6 +65,8 @@ namespace Realms
 
         public override void update(GameTime gameTime, Grid map)
         {
+            if (destLoc == null)
+                destLoc = loc;
             Game1.Camera.MoveSpeed = Speed;
             Game1.Camera.Focus = Position;
             Position += velocity;
@@ -80,7 +82,7 @@ namespace Realms
             velocity *= Speed;
             if (loc == destLoc)
             {
-                if (Input.rightPressed())
+                if (Input.rightDown())
                 {
                     Location test = new Location(loc.Row, loc.Column);
                     test.Column++;
@@ -90,7 +92,7 @@ namespace Realms
                         //play anime right
                     }
                 }
-                else if (Input.leftPressed())
+                else if (Input.leftDown())
                 {
                     Location test = new Location(loc.Row, loc.Column);
                     test.Column--;
@@ -100,7 +102,7 @@ namespace Realms
                         //play anime left
                     }
                 }
-                else if (Input.upPressed())
+                else if (Input.upDown())
                 {
                     Location test = new Location(loc.Row, loc.Column);
                     test.Row--;
@@ -110,7 +112,7 @@ namespace Realms
                         //play anime up
                     }
                 }
-                else if (Input.downPressed())
+                else if (Input.downDown())
                 {
                     Location test = new Location(loc.Row, loc.Column);
                     test.Row++;
@@ -123,6 +125,48 @@ namespace Realms
             }
             oldPosition = Position;
             oldLoc = loc;
+
+            Tile[] objects = map.getObjects();
+            foreach (Tile t in objects)
+            {
+                if (t != null)
+                {
+                    if (t.GetType() == typeof(BaseEnemy))
+                    {
+                        if (!t.IsDead)
+                        {
+                            if (this.measureDis(t.Position) <= (32 * Math.Sqrt(2)))
+                            {
+                                BaseEnemy b = (BaseEnemy)t;
+                                this.engageBattle(b);
+                                b.battled();
+                            }
+                        }
+                    }
+
+                    else if (t.GetType() == typeof(TripWire))
+                    {
+                        if (!t.IsDead)
+                        {
+                            if (this.isColliding(t.Rec))
+                            {
+                                TripWire tw = (TripWire)t;
+                                tw.trigger();
+                                destLoc = null;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        public void engageBattle(BaseEnemy enemy)
+        {
+            //check for party members on the server
+            List<BattleEnemy> enemies = enemy.spawnEnemies();
+            BattleCharacter bc = new BattleCharacter(Image.Particle, .07f, this);
+
+            Game1.activateBattle(new Battle(bc, enemies));
         }
 
         public Stats calcStats()
@@ -131,8 +175,41 @@ namespace Realms
             stats = new Stats(this);
 
             //then add equips and skill trees
+            stats.increaseAccuracy(equips.wep.WepStats.Accuracy);
+            stats.increaseDefense(equips.wep.WepStats.Defense);
+            stats.increaseCritChance(equips.wep.WepStats.CritChance);
+            stats.increaseDodge(equips.wep.WepStats.Dodge);
+            stats.increaseMagicStrength(equips.wep.WepStats.MagicStrength);
+            stats.increaseSpeed(equips.wep.WepStats.Speed);
+            stats.increaseStrength(equips.wep.WepStats.Strength);
+
+            stats.increaseAccuracy(equips.armor.Stats.Accuracy);
+            stats.increaseDefense(equips.armor.Stats.Defense);
+            stats.increaseCritChance(equips.armor.Stats.CritChance);
+            stats.increaseDodge(equips.armor.Stats.Dodge);
+            stats.increaseMagicStrength(equips.armor.Stats.MagicStrength);
+            stats.increaseSpeed(equips.armor.Stats.Speed);
+            stats.increaseStrength(equips.armor.Stats.Strength);
 
             return stats;
+        }
+
+        public void setLocation(Grid gr, Location newLoc)
+        {
+            if (gr == null)
+            {
+                this.Location = Location.Zero;
+                return;
+            }
+
+            if (gr.isValid(newLoc))
+            {
+                this.Location = newLoc;
+            }
+            else
+            {
+                this.Location = Location.Zero;
+            }
         }
 
         public void equipWeapon(Weapon newWep)

@@ -14,6 +14,7 @@ namespace Realms
         protected List<string> options;
         protected string name;
         protected int count, capacity;
+        protected bool battleItem;
 
         public string Name
         { 
@@ -40,10 +41,16 @@ namespace Realms
             get { return count == capacity; }
         }
 
-        public Item(Texture2D texture, float scaleFactor, string name)
+        public bool BattleItem
+        {
+            get { return battleItem; }
+        }
+
+        public Item(Texture2D texture, float scaleFactor, string name, bool battleItem)
             : base(texture, scaleFactor, 0, Vector2.Zero)
         {
             this.name = name;
+            this.battleItem = battleItem;
             options = new List<string>();
 
             options.Add("Use");

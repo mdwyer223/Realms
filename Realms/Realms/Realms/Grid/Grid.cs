@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
@@ -9,24 +10,17 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Realms
 {
-    public enum Zone
-    {
-
-    }
-
-    public enum Planet
-    {
-
-    }
-
     public abstract class Grid
     {
-        List<List<Tile>> map;
-        List<NonControlledCharacter> people;
-        List<AdvancedSprite> NPCs, enemies;
-        BaseCharacter player;
+        Thread mapUpdate;
+        protected List<List<Tile>> map;
+        protected List<NonControlledCharacter> people;
+        protected List<AdvancedSprite> NPCs, enemies;
+        protected List<BaseObject> objects;
+        protected BaseCharacter player;
         Vector2 gridPos, gridBotRight, gridBotLeft, gridTopRight;
-        int rows, columns;
+        protected int rows, columns;
+        protected Location startLocPlayer;
 
         public int Rows
         {
@@ -38,14 +32,31 @@ namespace Realms
             get { return columns; }
         }
 
+        public List<List<Tile>> Map
+        {
+            get { return map; }
+        }
+
+        public BaseCharacter Player
+        {
+            get { return player; }
+            set { player = value; }
+        }
+
+        public Location StartLoc
+        {
+            get { return startLocPlayer; }
+        }
+
         public Grid()
         {
             map = new List<List<Tile>>();
             enemies = new List<AdvancedSprite>();
             NPCs = new List<AdvancedSprite>();
             people = new List<NonControlledCharacter>();
+            objects = new List<BaseObject>();
             gridPos = Vector2.Zero;
-            player = new Assassin(Image.Particle, 5, Location.Zero, 1);//TODO: remove
+            player = new Assassin(Image.Particle, Location.Zero, 100);//TODO: remove
          
             this.rows = (int)(Game1.View.Height / Tile.T_HEIGHT + .5f);
             this.columns = (int)(Game1.View.Width / Tile.T_WIDTH + .5f);
@@ -60,16 +71,21 @@ namespace Realms
                     map[y].Add(new Tile(Image.Particle, 0, new Location(y, x)));
                 }
             }
+
+            startLocPlayer = Location.Zero;
+
+            mapUpdate = new Thread(new ThreadStart(updateMap));
+            mapUpdate.Start();
         }
 
-        public Grid(int rows, int columns)
+        public Grid(int rows, int columns, Location locForPlayer)
         {
             map = new List<List<Tile>>();
             enemies = new List<AdvancedSprite>();
             NPCs = new List<AdvancedSprite>();
             people = new List<NonControlledCharacter>();
             gridPos = Vector2.Zero;
-            player = new Assassin(Image.Particle, 5, Location.Zero, 1);//TODO: remove
+            player = new Assassin(Image.Particle, Location.Zero, 100);//TODO: remove
 
             this.rows = rows;
             this.columns = columns;
@@ -82,6 +98,12 @@ namespace Realms
                     map[y].Add(new Tile(Image.Particle, 0, new Location(y, x)));
                 }
             }
+
+            player.setLocation(this, locForPlayer);
+            startLocPlayer = locForPlayer;
+
+            mapUpdate = new Thread(new ThreadStart(updateMap));
+            mapUpdate.Start();
         }
 
         public virtual void update(GameTime gameTime)
@@ -90,22 +112,31 @@ namespace Realms
 
             player.update(gameTime, this);
 
-            for (int y = 0; y < rows; y++)
+            //pull info from the server for noncontrolled block
+
+            for (int i = 0; i < enemies.Count; i++)
             {
-                for (int x = 0; x < columns; x++)
+                if (enemies[i] != null)
                 {
-                    if (map[y][x] != null)
-                    {
-                        if (Game1.Camera.IsInView(map[y][x].Position, map[y][x].Rec))
-                        {
-                            map[y][x].update(gameTime, this);
-                        }
-                        
-                    }
+                    enemies[i].update(gameTime, this);
                 }
             }
 
-            //GridPos = -player.ChangeInPos;
+            for (int i = 0; i < objects.Count; i++)
+            {
+                if (objects[i] != null)
+                {
+                    objects[i].update(gameTime, this);
+                }
+            }
+
+            for (int i = 0; i < NPCs.Count; i++)
+            {
+                if (NPCs[i] != null)
+                {
+                    NPCs[i].update(gameTime, this);
+                }
+            }
         }
 
         public virtual void draw(SpriteBatch spriteBatch)
@@ -143,6 +174,43 @@ namespace Realms
             }
 
             player.draw(spriteBatch);
+
+            foreach (BaseObject b in objects)
+            {
+                if (b != null)
+                    b.draw(spriteBatch);
+            }
+        }
+
+        private void updateMap()
+        {
+            GameTime gameTime = new GameTime();
+
+            while (Game1.Active)
+            {
+                for (int y = 0; y < rows; y++)
+                {
+                    for (int x = 0; x < columns; x++)
+                    {
+                        if (map[y][x] != null)
+                        {
+                            if (Game1.Camera != null)
+                            {
+                                if (Game1.Camera.IsInView(map[y][x].Position, map[y][x].Rec))
+                                {
+                                    map[y][x].update(gameTime, this);
+                                }
+                            }
+                        }
+                    }
+                }
+                Thread.Sleep(16);
+            }
+        }
+
+        public void changeStartLoc(Location newLoc)
+        {
+            startLocPlayer = newLoc;
         }
 
         private void setCorners()
@@ -176,11 +244,19 @@ namespace Realms
                     objs.Add(NPCs[n]);
             }
 
+            for (int o = 0; o < objects.Count; o++)
+            {
+                if (objects[o] != null)
+                    objs.Add(objects[o]);
+            }
+
             return objs.ToArray();
         }
 
         public bool isValid(Location loc)
         {
+            if (loc == null)
+                loc = new Location(0, 0);
             if (loc.Row < 0 || loc.Column < 0)
                 return false;
             else if (loc.Row >= Rows || loc.Column >= Columns)

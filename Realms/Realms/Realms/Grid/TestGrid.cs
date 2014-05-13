@@ -14,7 +14,7 @@ namespace Realms
         public TestGrid()
             : base()
         {
-
+            objects.Add(new TripWire(Image.Particle, new Location(0, 5), "testdungeon"));
         }
 
         public override void update(GameTime gameTime)

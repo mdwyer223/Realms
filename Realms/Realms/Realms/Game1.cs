@@ -34,6 +34,10 @@ namespace Realms
         NonControlledBlock nB;
         ControlledBlock b;
 
+        static Battle nextBattle;
+        static Grid nextMap;
+        static bool changedState = false;
+
         static ContentManager otherContent;
         public static ContentManager GameContent
         {
@@ -110,6 +114,21 @@ namespace Realms
         {
             Input.Update();
 
+            if (changedState)
+            {
+                if (State == GameState.BATTLE)
+                {
+                    world.Grid.changeStartLoc(world.Grid.Player.Location);
+                    battleComp.activateBattle(nextBattle, world.Grid);
+                }
+                else if (State == GameState.PLAYING)
+                {
+                    world.changeMap(nextMap);
+                }
+
+                changedState = false;
+            }
+
             if (mainGameState == GameState.PLAYING)
             {
                 world.Enabled = world.Visible = true;
@@ -165,12 +184,23 @@ namespace Realms
 
 
             spriteBatch.Begin();
-            spriteBatch.DrawString(Font.Normal, connectionTest, new Vector2(5, 5), Color.White);
-            spriteBatch.DrawString(Font.Normal, keyPress, new Vector2(5, 15), Color.Red);
-            spriteBatch.Draw(Image.Cursor, Input.mouseRec(), Color.White);
+            spriteBatch.Draw(Image.Cursor, Input.mouseDrawnRec(), Color.White);
             //nB.Draw(spriteBatch);
             //b.Draw(spriteBatch);
             spriteBatch.End();  
+        }
+
+        public static void activateBattle(Battle b)
+        {
+            // world change to battle scene
+            changeState(GameState.BATTLE);
+            nextBattle = b;
+        }
+
+        public static void changeWorld(Grid g)
+        {
+            changeState(GameState.PLAYING);
+            nextMap = g;
         }
 
         public static void changeActive()
@@ -181,6 +211,7 @@ namespace Realms
         public static void changeState(GameState newState)
         {
             mainGameState = newState;
+            changedState = true;
         }
         
     }

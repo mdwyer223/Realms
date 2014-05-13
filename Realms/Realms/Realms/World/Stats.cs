@@ -15,14 +15,24 @@ namespace Realms
 
         public Stats(BaseCharacter character)
         {
-            //MaxPercent percents;
-
             if (character != null)
             {
                 this.level = character.Level;
                 if (character.GetType() == typeof(Assassin))
                 {
                     calcStats(assassinStruct(), defaultAssassin());
+                }
+                else if (character.GetType() == typeof(Assault))
+                {
+                    calcStats(assaultStruct(), defaultAssault());
+                }
+                else if (character.GetType() == typeof(Scientist))
+                {
+                    calcStats(scientistStruct(), defaultScientist());
+                }
+                else if (character.GetType() == typeof(Engineer))
+                {
+                    calcStats(engineerStruct(), defaultEngineer());
                 }
             }
         }

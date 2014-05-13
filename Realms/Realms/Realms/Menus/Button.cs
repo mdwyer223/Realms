@@ -56,7 +56,7 @@ namespace Realms
 
         public override void update(GameTime gameTime)
         {
-            hasHover = this.Rec.Intersects(Input.mouseRec());
+            hasHover = this.Rec.Intersects(Input.mouseDrawnRec());
 
             if (Input.leftMouseClick() && hasHover)
             {

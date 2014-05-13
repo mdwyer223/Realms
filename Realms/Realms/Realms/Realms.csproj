@@ -114,15 +114,24 @@
   <ItemGroup>
     <Compile Include="Battle\BattleClasses\Battle.cs" />
     <Compile Include="Battle\BattleClasses\BattleEnemy.cs" />
+    <Compile Include="Battle\BattleClasses\BattleMessage.cs" />
+    <Compile Include="Battle\Menus\BattleMenu.cs" />
     <Compile Include="Blocks.cs" />
     <Compile Include="Grid\AdvancedSprite.cs" />
     <Compile Include="Grid\AnimatedSprite.cs" />
     <Compile Include="Grid\TestGrid.cs" />
     <Compile Include="MapData\Dungeons\Dungeon.cs" />
+    <Compile Include="MapData\Dungeons\TestDungeon.cs" />
+    <Compile Include="Menus\Label.cs" />
     <Compile Include="World\NPCs\Npc.cs" />
     <Compile Include="World\Objects\BaseObject.cs" />
+    <Compile Include="World\Objects\Building.cs" />
+    <Compile Include="World\Objects\Chest.cs" />
     <Compile Include="World\Objects\NonControlledCharacter.cs" />
+    <Compile Include="World\Objects\TripWire.cs" />
+    <Compile Include="World\Objects\Wall.cs" />
     <Compile Include="World\Player\Assassin.cs" />
+    <Compile Include="World\Player\Assault.cs" />
     <Compile Include="World\Player\BaseCharacter.cs" />
     <Compile Include="World\Enemy\BaseEnemy.cs" />
     <Compile Include="Grid\BaseSprite.cs" />
@@ -130,6 +139,12 @@
     <Compile Include="Battle\BattleClasses\BattleSprite.cs" />
     <Compile Include="Grid\Grid.cs" />
     <Compile Include="Grid\Location.cs" />
+    <Compile Include="World\Player\Engineer.cs" />
+    <Compile Include="World\Player\Inventory\Items\Armor\Cloth.cs" />
+    <Compile Include="World\Player\Inventory\Items\Materia\DoubleStrike.cs" />
+    <Compile Include="World\Player\Inventory\Items\Materia\Fire.cs" />
+    <Compile Include="World\Player\Inventory\Items\Weapons\MasterSword.cs" />
+    <Compile Include="World\Player\Scientist.cs" />
     <Compile Include="World\Stats.cs" />
     <Compile Include="Grid\Tile.cs" />
     <Compile Include="Battle\BattleHandler.cs" />

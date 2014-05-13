@@ -20,10 +20,15 @@ namespace Realms
         SpriteBatch spriteBatch;
         Grid g;
 
+        public Grid Grid
+        {
+            get { return g; }
+        }
+
         public World(Game game)
             : base(game)
         {
-            g = new TestGrid();
+            g = new TestDungeon(10, 10);
             spriteBatch = new SpriteBatch(game.GraphicsDevice);
         }
         
@@ -42,6 +47,16 @@ namespace Realms
             g.draw(spriteBatch);
             spriteBatch.End();
             base.Draw(gameTime);
+        }
+
+        public void changeMap(Grid newPlace)
+        {
+            if (newPlace != null)
+            {
+                newPlace.Player = g.Player;
+                newPlace.Player.setLocation(newPlace, newPlace.StartLoc);
+                g = newPlace;
+            }
         }
     }
 }

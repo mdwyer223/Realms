@@ -141,7 +141,7 @@ namespace Realms
             _position.X += (Focus.X - Position.X) * MoveSpeed * delta;
             _position.Y += (Focus.Y - Position.Y) * MoveSpeed * delta;
 
-            Rotation = 0f;
+            Rotation += 0f;
             //Scale = 1.25f;
 
             base.Update(gameTime);
