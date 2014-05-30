@@ -11,11 +11,18 @@ namespace Realms
 {
     public class NonControlledCharacter : AdvancedSprite
     {
-        // needs to receive information from the server to move
-        public NonControlledCharacter(Texture2D texture, float speed, Location startLoc)
+        int id;
+
+        public NonControlledCharacter(Texture2D texture, float speed, Location startLoc, int id)
             : base(texture, speed, startLoc)
         {
+            this.id = id;
+        }
 
+        public override void update(GameTime gameTime, Grid gr)
+        {
+            //listen
+            base.update(gameTime, gr);
         }
     }
 }

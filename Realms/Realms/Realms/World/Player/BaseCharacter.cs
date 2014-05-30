@@ -96,6 +96,8 @@ namespace Realms
 
         public override void update(GameTime gameTime, Grid map)
         {
+            talkToServer(); 
+
             if (destLoc == null)
                 destLoc = loc;
             Game1.Camera.MoveSpeed = Speed;
@@ -189,6 +191,11 @@ namespace Realms
                     }
                 }
             }
+        }
+
+        public void talkToServer()
+        {
+            //send info up
         }
 
         public bool giveQuest(Quest q)

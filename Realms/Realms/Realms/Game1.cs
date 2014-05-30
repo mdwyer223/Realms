@@ -47,7 +47,7 @@ namespace Realms
             get { return otherDevice.Viewport; }
         }
 
-        static GameState mainGameState = GameState.PLAYING;
+        static GameState mainGameState = GameState.MAINMENU;
         public static GameState State
         {
             get { return mainGameState; }

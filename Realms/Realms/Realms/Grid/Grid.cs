@@ -133,6 +133,14 @@ namespace Realms
                 }
             }
 
+            for (int i = 0; i < people.Count; i++)
+            {
+                if (people[i] != null)
+                {
+                    people[i].update(gameTime, this);
+                }
+            }
+
             for (int i = 0; i < NPCs.Count; i++)
             {
                 if (NPCs[i] != null)

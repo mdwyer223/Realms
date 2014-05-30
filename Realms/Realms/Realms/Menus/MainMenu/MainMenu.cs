@@ -14,9 +14,15 @@ namespace Realms
 {
     public class MainMenu : Microsoft.Xna.Framework.DrawableGameComponent
     {
+        SpriteBatch spriteBatch;
+        LogInForm logInForm;
+        int loginID;
+
         public MainMenu(Game game)
             : base(game)
         {
+            spriteBatch = new SpriteBatch(game.GraphicsDevice);
+            logInForm = new LogInForm();
         }
 
         public override void Initialize()
@@ -27,13 +33,16 @@ namespace Realms
 
         public override void Update(GameTime gameTime)
         {
-
+            if (logInForm != null)
+                logInForm.update(gameTime);
             base.Update(gameTime);
         }
 
         public override void Draw(GameTime gameTime)
         {
-            
+            spriteBatch.Begin();
+            logInForm.draw(spriteBatch);
+            spriteBatch.End();
             base.Draw(gameTime);
         }
     }

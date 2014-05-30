@@ -34,25 +34,34 @@ namespace Realms
         public Button(bool focus, Vector2 startPos, float scaleFactor, string name)
             : base(Image.Particle, scaleFactor, 0 , startPos)
         {
+            standard = Fonts.FormBody;
             this.hasFocus = focus;
             this.hasHover = false;
             this.label = name;
+            hoverRec = new Rectangle((int)startPos.X, (int)startPos.Y,
+                (int)standard.MeasureString(name).X, (int)standard.MeasureString(name).Y);
         }
 
         public Button(Vector2 startPos, float scaleFactor, string name)
             : base(Image.Particle, scaleFactor, 0, startPos)
         {
+            standard = Fonts.FormBody;
             this.hasFocus = hasHover = false;
             this.label = name;
+            hoverRec = new Rectangle((int)startPos.X, (int)startPos.Y, 
+                (int)standard.MeasureString(name).X, (int)standard.MeasureString(name).Y);
         }
 
 
         public Button(Vector2 startPos, float scaleFactor, string name, SpriteFont font)
             : base(Image.Particle, scaleFactor, 0, startPos)
         {
+            standard = Fonts.FormBody;
             this.hasFocus = hasHover = false;
             this.label = name;
             standard = font;
+            hoverRec = new Rectangle((int)startPos.X, (int)startPos.Y,
+                (int)standard.MeasureString(name).X, (int)standard.MeasureString(name).Y);
         }
 
         public override void update(GameTime gameTime)
@@ -110,6 +119,8 @@ namespace Realms
         protected virtual void drawHover(SpriteBatch spriteBatch)
         {
             //may change or animate
+            spriteBatch.Draw(Image.Particle, hoverRec, Color.Red);
+            spriteBatch.DrawString(standard, label, Position, Color.Black);
         }
 
         protected virtual void drawStandard(SpriteBatch spriteBatch)
