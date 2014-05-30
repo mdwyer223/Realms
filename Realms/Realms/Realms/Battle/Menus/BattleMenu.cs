@@ -14,9 +14,9 @@ namespace Realms
         BattleCharacter currentBC;
         Rectangle healthRec, backRec, manaRec, waitRec, displayRec;
         Vector2 optionsPos, skillsPos;
-        List<Label> skills, options;
+        List<Label> skills, options, invent, summons;
 
-        float optionsLongWidth;
+        float optionsLongWidth, skillPosYOrigin;
 
         public BattleMenu(BattleCharacter bc)
         {
@@ -29,6 +29,8 @@ namespace Realms
 
             options = currentBC.BattleOpts;
             skills = currentBC.Skills;
+            invent = currentBC.Inventory;
+            summons = currentBC.Summons;
 
             optionsLongWidth = options[0].Font.MeasureString(options[0].Text).X;
             for (int i = 0; i < options.Count; i++)
@@ -53,6 +55,7 @@ namespace Realms
 
             optionsPos = new Vector2(waitRec.X, waitRec.Y + waitRec.Height + (.05f * displayRec.Height));
             skillsPos = new Vector2(optionsPos.X + optionsLongWidth, optionsPos.Y);
+            skillPosYOrigin = skillsPos.Y;
         }
 
         public void draw(SpriteBatch spriteBatch)
@@ -64,6 +67,7 @@ namespace Realms
             backRec.X = healthRec.X = (int)healthPos.X;
             backRec.Y = healthRec.Y = (int)healthPos.Y;
 
+            //spriteBatch.Draw(Image.Particle, displayRec, Color.Coral);
 
             spriteBatch.Draw(Image.Particle, backRec, Color.Gray);
             if (currentBC.HP / currentBC.MaxHP >= .25f)
@@ -98,6 +102,7 @@ namespace Realms
             }
             if (currentBC.SelectingSkills)
             {
+                int count = 0;
                 foreach (Label l in skills)
                 {
                     if (l != null)
@@ -105,6 +110,50 @@ namespace Realms
                         l.Position = skillsPos;
                         l.draw(spriteBatch);
                         skillsPos.Y += l.Font.MeasureString(l.Text).Y + (.01f * displayRec.Height);
+                        if (count != 0 && count % 3 == 0)
+                        {
+                            skillsPos = new Vector2(optionsPos.X + optionsLongWidth + l.Font.MeasureString(l.Text).X + (.02f * displayRec.Width)
+                                , skillPosYOrigin);
+                        }
+                        count++;
+                    }
+                }
+            }
+            else if (currentBC.SelectingItems)
+            {
+                int count = 0;
+                foreach (Label l in invent)
+                {
+                    if (l != null)
+                    {
+                        l.Position = skillsPos;
+                        l.draw(spriteBatch);
+                        skillsPos.Y += l.Font.MeasureString(l.Text).Y + (.01f * displayRec.Height);
+                        if (count != 0 && count % 3 == 0)
+                        {
+                            skillsPos = new Vector2(optionsPos.X + optionsLongWidth + l.Font.MeasureString(l.Text).X + (.02f * displayRec.Width)
+                                , skillPosYOrigin);
+                        }
+                        count++;
+                    }
+                }
+            }
+            else if (currentBC.SelectingSummons)
+            {
+                int count = 0;
+                foreach (Label s in summons)
+                {
+                    if (s != null)
+                    {
+                        s.Position = skillsPos;
+                        s.draw(spriteBatch);
+                        skillsPos.Y += s.Font.MeasureString(s.Text).Y + (.01f * displayRec.Height);
+                        if (count != 0 && count % 3 == 0)
+                        {
+                            skillsPos = new Vector2(optionsPos.X + optionsLongWidth + s.Font.MeasureString(s.Text).X + (.02f * displayRec.Width)
+                                , skillPosYOrigin);
+                        }
+                        count++;
                     }
                 }
             }

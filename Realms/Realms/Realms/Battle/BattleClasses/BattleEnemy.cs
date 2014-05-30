@@ -11,16 +11,40 @@ namespace Realms
 {
     public class BattleEnemy : BattleSprite
     {
+        int tier;
         BattleState state;
-        List<string> battleOptions;
+        //List<string> battleOptions;
+
+        public int ExpGiven
+        {
+            get
+            {
+                int exp = 0;
+                //if (tier != 0)
+                //{
+                //    exp = (int)((maxHP * tier) / 17.5);
+                //}
+                //else
+                //    exp = (int)(maxHP / 17.5);
+                exp = (int)maxHP;
+                return exp;
+            }
+        }
+
+        public float DropItemChance
+        {
+            get;
+            set;
+        }
 
         public BattleEnemy(Texture2D texture, float scaleFactor, BaseEnemy enemy)
-            : base(texture, scaleFactor, enemy.Stats)
+            : base(texture, scaleFactor, enemy.Stats, enemy.Stats.Health, enemy.Stats.Mana)
         {
             color = Color.Red;
             state = BattleState.WAITING;
-
+            tier = enemy.Tier;
             this.stats = enemy.Stats;
+            DropItemChance = enemy.DropChance;
             wait = (float)(MAX_WAIT) - (MAX_WAIT * (stats.Speed / 100f));
         }
 
@@ -77,6 +101,28 @@ namespace Realms
                 state = BattleState.WAITING;
             }
             base.update(gameTime, battleField);
+        }
+
+        public Item getDrop()
+        {
+            float chance = (float)rand.NextDouble();
+            if (chance <= DropItemChance)
+            {
+                return new WoodenSword();
+            }
+            return null;
+        }
+
+        public Item getRare()
+        {
+            float chance = (float)rand.NextDouble();
+
+            if (chance <= 10)
+            {
+                return new Ultima();
+            }
+            else
+                return null;
         }
     }
 }

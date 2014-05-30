@@ -69,7 +69,7 @@ namespace Realms
             get { return maxMP; }
         }
 
-        public BattleSprite(Texture2D texture, float scaleFactor, Stats statSheet)
+        public BattleSprite(Texture2D texture, float scaleFactor, Stats statSheet, int currentHealth, int currentMP)
             : base(texture, scaleFactor, 0, Vector2.Zero)
         {
             IsDead = false;
@@ -78,8 +78,11 @@ namespace Realms
             rand = new Random();
             messages = new List<BattleMessage>();
 
-            maxHP = currentHP = stats.Health;
-            maxMP = currentMP = stats.Mana;
+            maxHP = stats.Health;
+            maxMP = stats.Mana;
+
+            currentHP = currentHealth;
+            this.currentMP = currentMP;
         }
 
         public virtual void update(GameTime gameTime, List<BattleSprite> battleField)
@@ -108,6 +111,25 @@ namespace Realms
             }
         }
 
+        public virtual void heal(float hitPoints)
+        {
+            if (currentHP + hitPoints > maxHP)
+                currentHP = maxHP;
+            else
+                currentHP += hitPoints;
+        }
+
+        public virtual void applyTrueDamage(float trueDamage)
+        {
+            if (currentHP - trueDamage <= 0)
+            {
+                currentHP = 0;
+                IsDead = true;
+            }
+            else
+                currentHP -= trueDamage;
+        }
+
         public virtual void damage(Stats otherStats, Weapon wep)//may need overloads for different spells
         {
             //this sprite is getting the damage dealt to them
@@ -133,6 +155,8 @@ namespace Realms
 
             float defendedDamge = totalDamage * (stats.Defense / (stats.MaxDefense * 1.25f));
             totalDamage -= defendedDamge;
+            float debuff = rand.Next(95, 101) / 100f;
+            totalDamage *= debuff;
             messages.Add(new BattleMessage("" + totalDamage, Color.Red, this.Position));
             currentHP -= (int)totalDamage;
             if (currentHP < 0)
@@ -165,6 +189,8 @@ namespace Realms
             //}
             float defendedDamge = totalDamage * (stats.Defense / (stats.MaxDefense * 1.25f));
             totalDamage -= defendedDamge;
+            float debuff = rand.Next(95, 101) / 100f;
+            totalDamage *= debuff;
             messages.Add(new BattleMessage("" + totalDamage, Color.Red, this.Position));
             currentHP -= (int)totalDamage;
             if (currentHP < 0)

@@ -15,20 +15,31 @@ namespace Realms
         BattleState state;
         Rectangle waitRec, backgroundWait, selectorRec;
         Texture2D selectorImage;
-        int waitWidth, waitHeight, selectorIndex, optionsIndex = 0, skillsIndex = 0;
-        List<Label> battleOptions, skills, summons;
-        List<Materia> actualMateria;
+        int waitWidth, waitHeight, selectorIndex, optionsIndex = 0, skillsIndex = 0, itemsIndex = 0, summonsIndex = 0;
+        List<Label> battleOptions, skills, summons, inventoryDisplay;
+        List<Materia> actualMateria, summonMateria;
         List<Item> inventoryList;
+        Materia currentSummon;
 
-        bool doubleStrike, cover, engineer, hasSummon;
+        bool doubleStrike, cover, hasSummon, summonOnField;
         float doubleStrikeChance;
 
-        bool options = true, selectingSkills = false, selectingItems = false;
-        int lastIndexOption, lastIndexSkill;
+        bool options = true, selectingSkills = false, selectingItems = false, selectingSummons = false;
+        int lastIndexOption, lastIndexSkill, lastIndexItems, lastIndexSummons;
 
         public bool SelectingSkills
         {
             get { return selectingSkills; }
+        }
+
+        public bool SelectingItems
+        {
+            get { return selectingItems; }
+        }
+
+        public bool SelectingSummons
+        {
+            get { return selectingSummons; }
         }
 
         public List<Label> BattleOpts
@@ -44,19 +55,32 @@ namespace Realms
             get { return skills; }
         }
 
+        public List<Label> Inventory
+        {
+            get { return inventoryDisplay; }
+        }
+
+        public List<Label> Summons
+        {
+            get { return summons; }
+        }
+
         public float WaitPercent
         {
             get { return (waitTimer / wait); }
         }
 
         public BattleCharacter(Texture2D texture, float scaleFactor, BaseCharacter character)
-            : base(texture, scaleFactor, character.calcStats())
+            : base(texture, scaleFactor, character.calcStats(), character.CurrentHP, character.CurrentMP)
         {
             color = Color.Green;
             battleOptions = new List<Label>();
             skills = new List<Label>();
             summons = new List<Label>();
+            inventoryDisplay = new List<Label>();
             actualMateria = new List<Materia>();
+            summonMateria = new List<Materia>();
+            inventoryList = new List<Item>();
             this.stats = character.calcStats();
             this.equipment = character.Equipment;//check materia for any options to add on
 
@@ -79,7 +103,16 @@ namespace Realms
                 {
                     if (!matItems[i].Passive)
                     {
-                        this.actualMateria.Add(matItems[i]);
+                        if (matItems[i].Summon)
+                        {
+                            summons.Add(new Label(matItems[i].Name, Vector2.Zero, Fonts.BattleMenu));
+                            summonMateria.Add(matItems[i]);
+                            hasSummon = true;
+                        }
+                        else
+                        {
+                            this.actualMateria.Add(matItems[i]);
+                        }
                     }
                     else
                     {
@@ -101,7 +134,16 @@ namespace Realms
                 {
                     if (!matItems[i].Passive)
                     {
-                        this.actualMateria.Add(matItems[i]);
+                        if (matItems[i].Summon)
+                        {
+                            summons.Add(new Label(matItems[i].Name, Vector2.Zero, Fonts.BattleMenu));
+                            summonMateria.Add(matItems[i]);
+                            hasSummon = true;
+                        }
+                        else
+                        {
+                            this.actualMateria.Add(matItems[i]);
+                        }
                     }
                     else
                     {
@@ -109,23 +151,41 @@ namespace Realms
                 }
             }
 
-            //cycle through materia
             battleOptions.Add(new Label("Attack", Vector2.Zero, Fonts.BattleMenu));
-            battleOptions.Add(new Label("Items",Vector2.Zero, Fonts.BattleMenu));
-            for (int i = 0; i < matItems.Count; i++)
+            for (int i = 0; i < character.Inventory.ItemList.Count; i++)
             {
-                if (matItems[i] != null)
+                if (character.Inventory.ItemList[i] != null)
                 {
-                    skills.Add(new Label(matItems[i].Skill,Vector2.Zero, Fonts.BattleMenu));
+                    if (character.Inventory.ItemList[i].BattleItem)
+                    {
+                        this.inventoryList.Add(character.Inventory.ItemList[i]);
+                        this.inventoryDisplay.Add(new Label(character.Inventory.ItemList[i].Name, Vector2.Zero, Fonts.BattleMenu));
+                    }
                 }
             }
-            if (matItems.Count > 0)
+            if(inventoryList.Count != 0)
+                battleOptions.Add(new Label("Items",Vector2.Zero, Fonts.BattleMenu));
+
+            for (int i = 0; i < actualMateria.Count; i++)
+            {
+                if (actualMateria[i] != null)
+                {
+                    skills.Add(new Label(actualMateria[i].Skill,Vector2.Zero, Fonts.BattleMenu));
+                }
+            }
+            if (actualMateria.Count > 0)
             {
                 battleOptions.Add(new Label("Skills", Vector2.Zero, Fonts.BattleMenu));
             }
 
-            selectorRec.X = (int)Position.X;
-            selectorRec.Y = (int)Position.Y;
+            if (hasSummon)
+            {
+                battleOptions.Add(new Label("Summons", Vector2.Zero, Fonts.BattleMenu));
+            }
+
+            selectorRec.X = (int)Game1.View.Width;
+            selectorRec.Y = (int)Game1.View.Height;
+            hasSummon = false;
         }
 
         public override void update(GameTime gameTime, List<BattleSprite> battleField)
@@ -169,6 +229,46 @@ namespace Realms
                     battleOptions[lastIndexOption].Hover = false;
                     battleOptions[optionsIndex].Hover = true;    
                 }
+                else if (selectingItems)
+                {
+                    if (Input.downPressed())
+                    {
+                        lastIndexItems = itemsIndex;
+                        itemsIndex++;
+                        if (itemsIndex >= inventoryList.Count)
+                            itemsIndex = inventoryList.Count - 1;
+
+                    }
+                    else if (Input.upPressed())
+                    {
+                        lastIndexItems = itemsIndex;
+                        itemsIndex--;
+                        if (itemsIndex < 0)
+                            itemsIndex = 0;
+                    }
+                    else if (Input.rightPressed())
+                    {
+                        lastIndexItems = itemsIndex;
+                        itemsIndex += 4;
+                        if (itemsIndex > inventoryList.Count)
+                            itemsIndex = inventoryList.Count- 1;
+                    }
+                    else if (Input.leftPressed())
+                    {
+                        lastIndexItems = itemsIndex;
+                        itemsIndex -= 4;
+                        if (itemsIndex < 0)
+                            itemsIndex = 0;
+                    }
+                    inventoryDisplay[lastIndexItems].Hover = false;
+                    inventoryDisplay[itemsIndex].Hover = true;
+
+                    if (Input.escapePressed())
+                    {
+                        selectingItems = false;
+                        options = true;
+                    }
+                }
                 else if (selectingSkills)
                 {
                     if (Input.downPressed())
@@ -195,7 +295,34 @@ namespace Realms
                         selectingSkills = false;
                     }
                 }
-                    
+                else if (selectingSummons)
+                {
+                    if (Input.downPressed())
+                    {
+                        lastIndexSummons = summonsIndex;
+                        summonsIndex++;
+                        if (summonsIndex >= summonMateria.Count)
+                            summonsIndex = 0;
+
+                    }
+                    else if (Input.upPressed())
+                    {
+                        lastIndexSummons = summonsIndex;
+                        summonsIndex--;
+                        if (summonsIndex < 0)
+                            summonsIndex = summonMateria.Count - 1;
+                    }
+                    summons[lastIndexSummons].Hover = false;
+                    summons[summonsIndex].Hover = true;
+
+                    if (Input.escapePressed())
+                    {
+                        options = true;
+                        selectingSummons = false;
+                    }
+                }
+
+                bool choseS = false;
                 if (Input.actionBarPressed())
                 {
                     if (selectingSkills)
@@ -205,22 +332,44 @@ namespace Realms
                             state = BattleState.SELECTING_SPRITE;
                         }
                     }
+                    else if (selectingSummons)
+                    {
+                        if (currentMP - summonMateria[summonsIndex].ManaCost > 0)
+                        {
+                            chooseBattleOption("ChoosingSummon", null);
+                            state = BattleState.MOVING;
+                            choseS = true;                            
+                        }
+                    }
 
                     if (battleOptions[optionsIndex].Text.Equals("Skills") && !selectingSkills)
                     {
                         selectingSkills = true;
                         selectingItems = false;
+                        selectingSummons = false;
                         options = false;
                     }
                     else if (battleOptions[optionsIndex].Text.Equals("Items") && !selectingItems)
                     {
-                        selectingItems = true;
+                        if (inventoryList.Count != 0)
+                        {
+                            selectingItems = true;
+                            selectingSkills = false;
+                            selectingSummons = false;
+                            options = false;
+                        }
+                    }
+                    else if (battleOptions[optionsIndex].Text.Equals("Summons") && !selectingSummons)
+                    {
+                        selectingSummons = true;
+                        selectingItems = false;
                         selectingSkills = false;
                         options = false;
                     }
                     else
                     {
-                        state = BattleState.SELECTING_SPRITE;
+                        if(!choseS)
+                            state = BattleState.SELECTING_SPRITE;
                     }
                 }
             }
@@ -255,16 +404,28 @@ namespace Realms
                 if (Input.actionBarPressed() && !battleField[selectorIndex].IsDead)
                 {
                     //check spells/mana here
-                    if (!selectingSkills)
+                    if (options)
                     {
                         chooseBattleOption(battleOptions[optionsIndex].Text, battleField[selectorIndex]);
                     }
-                    else
+                    else if(selectingSkills)
                     {
                         chooseBattleOption(skills[skillsIndex].Text, battleField[selectorIndex]);
                     }
+                    else if (selectingSummons)
+                    {
+                        chooseBattleOption("ChoosingSummon", battleField[selectorIndex]);
+                    }
+                    else if (selectingItems)
+                    {
+                        inventoryList[itemsIndex].chooseOption("Use", battleField[selectorIndex]);
+                        if (inventoryList[itemsIndex].ItemCount <= 0)
+                        {
+                            inventoryDisplay.RemoveAt(itemsIndex);
+                            inventoryList.RemoveAt(itemsIndex);
+                        }
+                    }
                     state = BattleState.MOVING;
-                    waitTimer = 0;
                 }
             }
             else if (state == BattleState.MOVING)
@@ -273,6 +434,9 @@ namespace Realms
                 state = BattleState.WAITING;
                 options = true;
                 selectingSkills = false;
+                selectingItems = false;
+                selectingSummons = false;
+                waitTimer = 0;
             }
 
             base.update(gameTime, battleField);
@@ -305,6 +469,20 @@ namespace Realms
                             attack(target);
                         }
                     }
+                    else if (hasSummon)
+                    {
+                        if (currentMP - currentSummon.ManaCost > 0)
+                        {
+                            target.magicDamage(this.stats, this.currentSummon);
+                            this.currentMP -= currentSummon.ManaCost;
+                        }
+                        else
+                        {
+                            target.magicDamage(this.stats, this.currentSummon);
+                            currentMP = 0;
+                            hasSummon = false;
+                        }
+                    }
                     else
                     {
                         attack(target);
@@ -312,9 +490,13 @@ namespace Realms
                     state = BattleState.MOVING;
                     break;
                 case "Fire"://todo: change name
-                    //check mana cost here when selection is implemented
                     magicAttack(target, skillsIndex);
                     currentMP -= actualMateria[skillsIndex].ManaCost;
+                    state = BattleState.MOVING;
+                    break;
+                case "ChoosingSummon":
+                    this.currentSummon = summonMateria[summonsIndex];
+                    hasSummon = true;
                     state = BattleState.MOVING;
                     break;
             }
@@ -328,6 +510,11 @@ namespace Realms
         public void magicAttack(BattleSprite target, int materiaIndex)
         {
             target.magicDamage(this.stats, actualMateria[materiaIndex]);//need materia selection
+        }
+
+        public void summonAttack(BattleSprite target, int summonIndex)
+        {
+            target.magicDamage(this.stats, summonMateria[summonIndex]);
         }
     }
 }

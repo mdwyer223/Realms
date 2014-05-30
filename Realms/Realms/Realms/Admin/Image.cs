@@ -21,6 +21,16 @@ namespace Realms
             get { return Game1.GameContent.Load<Texture2D>("Cursor"); }
         }
 
+        public static Texture2D Building
+        {
+            get { return Game1.GameContent.Load<Texture2D>("Building"); }
+        }
+
+        public static Texture2D Teleporter
+        {
+            get { return Game1.GameContent.Load<Texture2D>("Teleporter"); }
+        }
+
         // other images...
     }
 }

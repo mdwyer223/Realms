@@ -9,30 +9,35 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Realms
 {
-    /// <summary>
-    /// This will trigger from the grid, go into game1 then set up a new battle scene there
-    /// </summary>
     public class Battle
     {
         List<BattleSprite> battleField;
-        List<BattleEnemy> enemies;
+        List<BattleEnemy> enemies, deadEnemies;
         List<BattleSprite> partyMembers;
+        BaseCharacter realCharacter;
         BattleCharacter character;
-
+        BattlePhase phase;
+        RewardsMenu endMenu;
         BattleMenu menu;
 
-        bool over;
+        bool over, checkedQuest;
 
         public bool Over
         {
             get { return over; }
         }
 
+        public bool CheckedQuest
+        {
+            get { return checkedQuest; }
+            set { checkedQuest = value; }
+        }
+
         public Battle(BattleCharacter b)
         {
             init();
             BaseEnemy be = new BaseEnemy(Image.Particle, 5, Location.Zero, EnemyType.LIGHT, 1);
-            enemies.Add(new BattleEnemy(Image.Particle, .07f, be));
+            //enemies.Add(new BattleEnemy(Image.Particle, .07f, be));
             character = b;
             createBattleField();
         }
@@ -62,10 +67,12 @@ namespace Realms
             battleField = new List<BattleSprite>();
             partyMembers = new List<BattleSprite>();
             enemies = new List<BattleEnemy>();
+            deadEnemies = new List<BattleEnemy>();
         }
 
         private void createBattleField()
         {
+            phase = BattlePhase.INTRO;
             menu = new BattleMenu(character);
             battleField.Add(character);
 
@@ -119,29 +126,48 @@ namespace Realms
 
         public void update(GameTime gameTime)
         {
-            menu.update();
-            //constantly seek party's health, enemy's health, update damage dealt, update health/mana on server
-            for (int i = 0; i < battleField.Count; i++)
+            if (phase == BattlePhase.INTRO)
             {
-                if (battleField[i] != null && !battleField[i].IsDead)
+                phase = BattlePhase.BATTLING;
+            }
+            else if (phase == BattlePhase.BATTLING)
+            {
+                menu.update();
+                //constantly seek party's health, enemy's health, update damage dealt, update health/mana on server
+                for (int i = 0; i < battleField.Count; i++)
                 {
-                    battleField[i].update(gameTime, battleField);
+                    if (battleField[i] != null && !battleField[i].IsDead)
+                    {
+                        battleField[i].update(gameTime, battleField);
+                    }
+                }
+
+                for (int i = 0; i < enemies.Count; i++)
+                {
+                    if (enemies[i] != null && enemies[i].IsDead)
+                    {
+                        deadEnemies.Add(enemies[i]);
+                        enemies.RemoveAt(i);
+                        break;
+                    }
+                }
+
+                if (enemies.Count == 0 || character.IsDead)
+                {
+                    //check to see if the player is done selecting items
+                    phase = BattlePhase.ENDSCREEN;
+                    realCharacter.setHealthMana((int)this.character.HP, (int)this.character.MP);
+                    endMenu = new RewardsMenu(deadEnemies, realCharacter);
                 }
             }
-
-            for (int i = 0; i < enemies.Count; i++)
+            else if (phase == BattlePhase.ENDSCREEN)
             {
-                if (enemies[i] != null && enemies[i].IsDead)
+                endMenu.update(gameTime);
+                if (Input.escapePressed())
                 {
-                    enemies.RemoveAt(i);
-                    break;
-                }
-            }
-
-            if (enemies.Count == 0 || character.IsDead)
-            {
-                //check to see if the player is done selecting items
+                    //check rewards screen
                     over = true;
+                }
             }
         }
 
@@ -155,6 +181,16 @@ namespace Realms
                     b.draw(spriteBatch);
                 }
             }
+
+            if (phase == BattlePhase.ENDSCREEN)
+            {
+                endMenu.draw(spriteBatch);
+            }
+        }
+
+        public void setPlayer(BaseCharacter bc)
+        {
+            realCharacter = bc;
         }
     }
 }

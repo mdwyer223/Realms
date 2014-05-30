@@ -521,21 +521,21 @@ namespace Realms
             equation = new QuadraticValues();
             equation.velo = .3f;
             equation.initial = i.defense;
-            equation.accel = ((p.strength * MaxDefense) - equation.initial - (equation.velo * MaxLevel)) / (float)(Math.Pow((MaxLevel), 2));
+            equation.accel = ((p.defense * MaxDefense) - equation.initial - (equation.velo * MaxLevel)) / (float)(Math.Pow((MaxLevel), 2));
             defense = (equation.accel * (float)(Math.Pow(Level, 2))) + (equation.velo * Level) + (equation.initial);
 
             //health
             equation = new QuadraticValues();
             equation.velo = 50;
             equation.initial = i.health;
-            equation.accel = ((p.strength * MaxHealth) - equation.initial - (equation.velo * MaxLevel)) / (float)(Math.Pow((MaxLevel), 2));
+            equation.accel = ((p.health * MaxHealth) - equation.initial - (equation.velo * MaxLevel)) / (float)(Math.Pow((MaxLevel), 2));
             healthPoints = (int)((equation.accel * (float)(Math.Pow(Level, 2))) + (equation.velo * Level) + (equation.initial));
 
             //mana
             equation = new QuadraticValues();
             equation.velo = 25;
             equation.initial = i.mana;
-            equation.accel = ((p.strength * MaxMana) - equation.initial - (equation.velo * MaxLevel)) / (float)(Math.Pow((MaxLevel), 2));
+            equation.accel = ((p.mana * MaxMana) - equation.initial - (equation.velo * MaxLevel)) / (float)(Math.Pow((MaxLevel), 2));
             manaPoints = (int)((equation.accel * (float)(Math.Pow(Level, 2))) + (equation.velo * Level) + (equation.initial));
 
             //speed

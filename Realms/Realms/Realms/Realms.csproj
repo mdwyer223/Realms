@@ -116,14 +116,24 @@
     <Compile Include="Battle\BattleClasses\BattleEnemy.cs" />
     <Compile Include="Battle\BattleClasses\BattleMessage.cs" />
     <Compile Include="Battle\Menus\BattleMenu.cs" />
+    <Compile Include="Battle\Menus\RewardsMenu.cs" />
     <Compile Include="Blocks.cs" />
     <Compile Include="Grid\AdvancedSprite.cs" />
     <Compile Include="Grid\AnimatedSprite.cs" />
-    <Compile Include="Grid\TestGrid.cs" />
+    <Compile Include="MapData\World\TestGrid.cs" />
     <Compile Include="MapData\Dungeons\Dungeon.cs" />
     <Compile Include="MapData\Dungeons\TestDungeon.cs" />
-    <Compile Include="Menus\Label.cs" />
+    <Compile Include="MapData\Forms\TestForm.cs" />
+    <Compile Include="Menus\Controls\FormLabel.cs" />
+    <Compile Include="Menus\InGame\Form.cs" />
+    <Compile Include="Menus\Controls\Label.cs" />
+    <Compile Include="Menus\InGame\FormHandler.cs" />
+    <Compile Include="Menus\InGame\MiniMenu.cs" />
+    <Compile Include="Menus\MainMenu\LogInForm.cs" />
     <Compile Include="World\NPCs\Npc.cs" />
+    <Compile Include="World\NPCs\Quests\Quest.cs" />
+    <Compile Include="World\NPCs\Quests\QuestHandler.cs" />
+    <Compile Include="World\NPCs\Quests\TalkToNpc.cs" />
     <Compile Include="World\Objects\BaseObject.cs" />
     <Compile Include="World\Objects\Building.cs" />
     <Compile Include="World\Objects\Chest.cs" />
@@ -143,6 +153,13 @@
     <Compile Include="World\Player\Inventory\Items\Armor\Cloth.cs" />
     <Compile Include="World\Player\Inventory\Items\Materia\DoubleStrike.cs" />
     <Compile Include="World\Player\Inventory\Items\Materia\Fire.cs" />
+    <Compile Include="World\Player\Inventory\Items\Materia\GatlingCannon.cs" />
+    <Compile Include="World\Player\Inventory\Items\Misc\DamagePlus.cs" />
+    <Compile Include="World\Player\Inventory\Items\Misc\Elixer.cs" />
+    <Compile Include="World\Player\Inventory\Items\Misc\Ether.cs" />
+    <Compile Include="World\Player\Inventory\Items\Misc\LifeEssence.cs" />
+    <Compile Include="World\Player\Inventory\Items\Misc\Miscellanious.cs" />
+    <Compile Include="World\Player\Inventory\Items\Misc\Potion.cs" />
     <Compile Include="World\Player\Inventory\Items\Weapons\MasterSword.cs" />
     <Compile Include="World\Player\Scientist.cs" />
     <Compile Include="World\Stats.cs" />
@@ -164,8 +181,8 @@
     <Compile Include="World\Player\Inventory\Items\Weapons\Ultima.cs" />
     <Compile Include="World\Player\Inventory\Items\Weapons\Weapon.cs" />
     <Compile Include="World\Player\Inventory\Items\Weapons\WoodenSword.cs" />
-    <Compile Include="Menus\Button.cs" />
-    <Compile Include="Menus\Textbox.cs" />
+    <Compile Include="Menus\Controls\Button.cs" />
+    <Compile Include="Menus\Controls\Textbox.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Game1.cs" />
@@ -211,8 +228,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="MapData\Buildings\" />
-    <Folder Include="MapData\World\" />
-    <Folder Include="World\Player\Inventory\Items\Misc\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\Microsoft.Xna.GameStudio.targets" />

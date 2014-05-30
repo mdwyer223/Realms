@@ -16,9 +16,15 @@ namespace Realms
         protected Stats stats;
         protected Equips equips;
         protected Inventory invent;
-        protected int level = 1, exp = 0, nextLevel;
+        protected int ID, level = 1, exp = 0, nextLevel = 0, money = 0,
+            currentHealth, currentMP;
         protected Location destLoc;
         protected Vector2 oldPosition;
+
+        protected List<Quest> currentQuests, completedQuests;
+
+        protected const int EXP_AT_MAX = 15000000;
+        private const int expVelo = 2000, expAccel = 1480;
 
         public Stats Stats
         {
@@ -38,6 +44,11 @@ namespace Realms
             get { return invent; }
         }
 
+        public List<Quest> QuestList
+        {
+            get { return currentQuests; }
+        }
+
         public int Level
         {
             get { return level; }
@@ -48,17 +59,37 @@ namespace Realms
             get { return exp; }
         }
 
+        public int CurrentHP
+        {
+            get { return currentHealth; }
+        }
+
+        public int CurrentMP
+        {
+            get { return currentMP; }
+        }
+
         public Vector2 ChangeInPos
         {
             get { return Position - oldPosition; }
         }
 
-        public BaseCharacter(Texture2D texture, float secondsToCrossScreen, Location startLoc, int level)
+        public BaseCharacter(Texture2D texture, float secondsToCrossScreen, Location startLoc, int level, int ID)
             : base(texture, secondsToCrossScreen, startLoc)
         {
+            this.ID = ID;
+            currentQuests = new List<Quest>();
+            completedQuests = new List<Quest>();
             color = Color.Purple;
             this.level = level;
             equips = new Equips();
+            invent = new Inventory();
+
+            invent.addItem(new Potion());
+            invent.addItem(new Elixer());
+            invent.addItem(new Ether());
+            invent.addItem(new LifeEssence());
+            invent.addItem(new DamagePlus());
 
             destLoc = startLoc;
         }
@@ -160,6 +191,113 @@ namespace Realms
             }
         }
 
+        public bool giveQuest(Quest q)
+        {
+            if (q != null)
+            {
+                bool finished = false;
+                foreach (Quest cQ in completedQuests)
+                {
+                    if (cQ.GetType() == q.GetType())
+                    {
+                        finished = true;
+                    }
+                }
+                bool started = false;
+                foreach (Quest pQ in currentQuests)
+                {
+                    if (pQ.GetType() == q.GetType())
+                    {
+                        started = true;
+                    }
+                }
+
+                if (!finished && !started)
+                {
+                    this.currentQuests.Add(q);
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        public void completedQuest(Quest q)
+        {
+            if (q != null)
+            {
+                bool haveQuest = false;
+                int questIndex = 0;
+                for (int i = 0; i < currentQuests.Count; i++)
+                {
+                    if (q.GetType() == currentQuests[i].GetType())
+                    {
+                        haveQuest = true;
+                        questIndex = i;
+                        break;
+                    }
+                }
+
+                if (haveQuest)
+                {
+                    completedQuests.Add(q);
+                    awardExp(q.AwardedExp);
+                    increaseFunds(q.AwardedMoney);
+                    if (q.AwardedItems != null)
+                    {
+                        foreach (Item i in q.AwardedItems)
+                        {
+                            if (i != null)
+                            {
+                                invent.addItem(i);
+                            }
+                        }
+                    }
+                    currentQuests.RemoveAt(questIndex);
+                }
+            }
+        }
+
+        public bool increaseFunds(int num)
+        {
+            //check max
+            money += num;
+            return true;
+        }
+
+        public bool decreaseFunds(int num)
+        {
+            if (money - num < 0)
+                return false;
+            else
+            {
+                money -= num;
+                return true;
+            }
+        }
+
+        public bool awardExp(int expPoints)
+        {
+            exp += expPoints;
+            return checkLevel();
+        }
+
+        public bool checkLevel()
+        {
+            if (exp > nextLevel && level != 100)
+            {
+                level++;
+                if (level < 100)
+                {
+                    nextLevel = (int)((expAccel * Math.Pow(level + 1, 2)) + (expVelo * level + 1));
+                    checkLevel();
+                }
+                return true;
+            }
+
+            return false;
+        }
+
         public void engageBattle(BaseEnemy enemy)
         {
             //check for party members on the server
@@ -173,23 +311,35 @@ namespace Realms
         {
             //calc base stats first
             stats = new Stats(this);
+            if (currentHealth == 0)
+            {
+                currentHealth = stats.Health;
+                currentMP = stats.Mana;
+            }
+
 
             //then add equips and skill trees
-            stats.increaseAccuracy(equips.wep.WepStats.Accuracy);
-            stats.increaseDefense(equips.wep.WepStats.Defense);
-            stats.increaseCritChance(equips.wep.WepStats.CritChance);
-            stats.increaseDodge(equips.wep.WepStats.Dodge);
-            stats.increaseMagicStrength(equips.wep.WepStats.MagicStrength);
-            stats.increaseSpeed(equips.wep.WepStats.Speed);
-            stats.increaseStrength(equips.wep.WepStats.Strength);
+            if (equips.wep != null)
+            {
+                stats.increaseAccuracy(equips.wep.WepStats.Accuracy);
+                stats.increaseDefense(equips.wep.WepStats.Defense);
+                stats.increaseCritChance(equips.wep.WepStats.CritChance);
+                stats.increaseDodge(equips.wep.WepStats.Dodge);
+                stats.increaseMagicStrength(equips.wep.WepStats.MagicStrength);
+                stats.increaseSpeed(equips.wep.WepStats.Speed);
+                stats.increaseStrength(equips.wep.WepStats.Strength);
+            }
 
-            stats.increaseAccuracy(equips.armor.Stats.Accuracy);
-            stats.increaseDefense(equips.armor.Stats.Defense);
-            stats.increaseCritChance(equips.armor.Stats.CritChance);
-            stats.increaseDodge(equips.armor.Stats.Dodge);
-            stats.increaseMagicStrength(equips.armor.Stats.MagicStrength);
-            stats.increaseSpeed(equips.armor.Stats.Speed);
-            stats.increaseStrength(equips.armor.Stats.Strength);
+            if (equips.armor != null)
+            {
+                stats.increaseAccuracy(equips.armor.Stats.Accuracy);
+                stats.increaseDefense(equips.armor.Stats.Defense);
+                stats.increaseCritChance(equips.armor.Stats.CritChance);
+                stats.increaseDodge(equips.armor.Stats.Dodge);
+                stats.increaseMagicStrength(equips.armor.Stats.MagicStrength);
+                stats.increaseSpeed(equips.armor.Stats.Speed);
+                stats.increaseStrength(equips.armor.Stats.Strength);
+            }
 
             return stats;
         }
@@ -255,6 +405,19 @@ namespace Realms
                     break;
                 }
             }
+        }
+
+        public void setHealthMana(int h, int m)
+        {
+            if (h < 0)
+                currentHealth = 0;
+            else
+                currentHealth = h;
+
+            if (m < 0)
+                currentMP = 0;
+            else
+                currentMP = m;
         }
     }
 }

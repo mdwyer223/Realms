@@ -31,7 +31,7 @@ namespace Realms
         }
 
         public Armor(Texture2D texture, float scaleFactor, string name)
-            : base(texture, scaleFactor, name)
+            : base(texture, scaleFactor, name, false)
         {
             materia = new List<Materia>();
             stats = new Stats(null);

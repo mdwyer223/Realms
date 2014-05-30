@@ -13,7 +13,6 @@ namespace Realms
     //This class is to allow code reuse between player, enemies
     public abstract class AdvancedSprite : Tile
     {
-
         protected Rectangle drawnRec;
         public virtual Rectangle DrawnRec
         {
@@ -28,7 +27,24 @@ namespace Realms
 
         public override void update(GameTime gameTime, Grid gr)
         {
-            base.update(gameTime, gr);
+            float distance = this.measureDis(gr.Player.Position);
+
+            if (isColliding(Input.mouseCollisionRec()))
+            {
+                if (distance <= (32 * Math.Sqrt(2)))
+                {
+                    mouseHover = true;
+                    if (Input.leftMouseClick())
+                    {
+                        //choose default option
+                        chooseInteraction(0, gr.Player);
+                    }
+                }
+            }
+            else
+            {
+                mouseHover = false;
+            }
         }
     }
 }

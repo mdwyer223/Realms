@@ -14,7 +14,9 @@ namespace Realms
     {
         public const int T_HEIGHT = 32, T_WIDTH = 32;
         protected Location loc, oldLoc;
+        protected List<string> interactions;
         int width = 1, height = 1;
+        protected bool mouseHover;
 
         public bool IsDead
         {
@@ -54,9 +56,21 @@ namespace Realms
             get { return loc; }
             protected set
             {
-                loc = value;
-                Position = new Vector2((int)loc.Column * T_WIDTH, (int)loc.Row * T_HEIGHT);
+                if (value != null)
+                {
+                    loc = value;
+                    Position = new Vector2((int)loc.Column * T_WIDTH, (int)loc.Row * T_HEIGHT);
+                }
+                else
+                {
+                    Location = Location.Zero;
+                }
             }
+        }
+
+        public List<string> Interactions
+        {
+            get { return interactions; }
         }
 
         public Tile(Texture2D tex, float secondsToCrossScreen, Location loc)
@@ -65,6 +79,8 @@ namespace Realms
             Rec = new Rectangle((int)loc.Column * T_WIDTH, (int)loc.Row * T_HEIGHT, T_WIDTH, T_HEIGHT);
             this.loc = this.oldLoc = loc;
             Open = this.GetType() == typeof(Tile);
+            interactions = new List<string>();
+            interactions.Add("Cancel");
         }
 
         public Tile(Texture2D tex, float secondsToCrossScreen, Location loc, bool open)
@@ -73,6 +89,8 @@ namespace Realms
             Rec = new Rectangle((int)loc.Column * T_WIDTH, (int)loc.Row * T_HEIGHT, T_WIDTH, T_HEIGHT);
             this.loc = this.oldLoc = loc;
             this.Open = open;
+            interactions = new List<string>();
+            interactions.Add("Cancel");
         }
 
         public sealed override void update(GameTime gameTime)
@@ -107,6 +125,62 @@ namespace Realms
                     Open = true;
                     this.color = Color.Green;
                 }
+
+                if (gr.Player != null)
+                {
+                    float distance = this.measureDis(gr.Player.Position);
+
+                    if (isColliding(Input.mouseCollisionRec()))
+                    {
+                        if (distance <= (32 * Math.Sqrt(2)))
+                        {
+                            mouseHover = true;
+                            if (Input.leftMouseClick())
+                            {
+                                //choose default option
+                                chooseInteraction(0, gr.Player);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        mouseHover = false;
+                    }
+                }
+            }
+        }
+
+        public override void draw(SpriteBatch spriteBatch)
+        {
+            if (mouseHover)
+            {
+                if (Open)
+                {
+                    spriteBatch.DrawString(Fonts.FormSubTitle, "Choose option: " + interactions[0],
+                        new Vector2(0, 0) - Game1.Camera.Origin + Game1.Camera.Position, color);
+                }
+            }
+            base.draw(spriteBatch);
+        }
+
+        public virtual void chooseInteraction(int index, BaseCharacter player)
+        {
+            string interaction = interactions[index];
+            decideInteraction(interaction, player);
+        }
+
+        public virtual void chooseInteraction(string interaction, BaseCharacter player)
+        {
+            decideInteraction(interaction, player);
+        }
+
+        protected virtual void decideInteraction(string interaction, BaseCharacter player)
+        {
+            //case logic here
+            switch (interaction)
+            {
+                default:
+                    return;
             }
         }
     }

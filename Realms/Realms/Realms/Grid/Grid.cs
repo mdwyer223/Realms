@@ -56,7 +56,7 @@ namespace Realms
             people = new List<NonControlledCharacter>();
             objects = new List<BaseObject>();
             gridPos = Vector2.Zero;
-            player = new Assassin(Image.Particle, Location.Zero, 100);//TODO: remove
+            //player = new Engineer(Image.Particle, Location.Zero, 100);//TODO: remove
          
             this.rows = (int)(Game1.View.Height / Tile.T_HEIGHT + .5f);
             this.columns = (int)(Game1.View.Width / Tile.T_WIDTH + .5f);
@@ -85,7 +85,7 @@ namespace Realms
             NPCs = new List<AdvancedSprite>();
             people = new List<NonControlledCharacter>();
             gridPos = Vector2.Zero;
-            player = new Assassin(Image.Particle, Location.Zero, 100);//TODO: remove
+            //player = new Assassin(Image.Particle, Location.Zero, 100);//TODO: remove
 
             this.rows = rows;
             this.columns = columns;
@@ -99,8 +99,11 @@ namespace Realms
                 }
             }
 
-            player.setLocation(this, locForPlayer);
-            startLocPlayer = locForPlayer;
+            if (player != null)
+            {
+                player.setLocation(this, locForPlayer);
+                startLocPlayer = locForPlayer;
+            }
 
             mapUpdate = new Thread(new ThreadStart(updateMap));
             mapUpdate.Start();
@@ -244,10 +247,13 @@ namespace Realms
                     objs.Add(NPCs[n]);
             }
 
-            for (int o = 0; o < objects.Count; o++)
+            if (this != null)
             {
-                if (objects[o] != null)
-                    objs.Add(objects[o]);
+                for (int o = 0; o < objects.Count; o++)
+                {
+                    if (objects[o] != null)
+                        objs.Add(objects[o]);
+                }
             }
 
             return objs.ToArray();
@@ -256,7 +262,7 @@ namespace Realms
         public bool isValid(Location loc)
         {
             if (loc == null)
-                loc = new Location(0, 0);
+                return false;
             if (loc.Row < 0 || loc.Column < 0)
                 return false;
             else if (loc.Row >= Rows || loc.Column >= Columns)
@@ -284,7 +290,5 @@ namespace Realms
 
             map[loc.Row][loc.Column] = obj;
         }
-
-
     }
 }

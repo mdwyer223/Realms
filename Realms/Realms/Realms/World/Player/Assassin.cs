@@ -11,8 +11,8 @@ namespace Realms
 {
     public class Assassin : BaseCharacter
     {
-        public Assassin(Texture2D texture, Location startLoc, int level)
-            : base(texture, 5, startLoc, level)
+        public Assassin(Texture2D texture, Location startLoc, int level, int id)
+            : base(texture, 5, startLoc, level, id)
         {
             equips.wep = new MasterSword();
             equips.armor = new Cloth();

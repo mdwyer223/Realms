@@ -18,11 +18,15 @@ namespace Realms
         Battle b;
         Grid currentGrid;
 
+        public Battle CurrentBattle
+        {
+            get { return b; }
+        }
+
         public BattleHandler(Game game)
             : base(game)
         {
             spriteBatch = new SpriteBatch(game.GraphicsDevice);
-            //b = new Battle(bc);
         }
 
         public override void Initialize()
@@ -62,6 +66,7 @@ namespace Realms
         public void activateBattle(Battle b, Grid g)
         {
             this.b = b;
+            b.setPlayer(g.Player);
             this.currentGrid = g;
         }
     }

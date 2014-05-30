@@ -20,7 +20,7 @@ namespace Realms
 
         public bool Over
         {
-            get { return alpha < 100f; }
+            get { return position.Y < targetPos.Y - 10; }
         }
 
         public BattleMessage(string message, Color color, Vector2 target)
@@ -40,8 +40,8 @@ namespace Realms
                 setPos = true;
             }
 
-            position.Y -= .75f;
-            alpha -= 2f;
+            position.Y -= 1.0f;
+            alpha -= 3f;
         }
 
         public void draw(SpriteBatch spriteBatch)

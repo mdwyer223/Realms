@@ -25,6 +25,11 @@ namespace Realms
             }
         }
 
+        public string NameAndCount
+        {
+            get { return name + " x " + count; }
+        }
+
         public int ItemCount
         {
             get { return count; }
@@ -88,6 +93,16 @@ namespace Realms
         }
 
         public virtual void chooseOption(string option, BaseCharacter player)//needs a player
+        {
+            switch (option)
+            {
+                case "Drop":
+                    this.count--;
+                    break;
+            }
+        }
+
+        public virtual void chooseOption(string option, BattleSprite target)
         {
             switch (option)
             {

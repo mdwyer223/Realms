@@ -39,4 +39,15 @@ namespace Realms
     {
         DARK, FIRE, ICE, HOLY, EARTH, ELECTRIC, NONE
     }
+
+    public enum BattlePhase
+    {
+        BATTLING, INTRO, ENDSCREEN
+    }
+
+    public enum GameState
+    {
+        PAUSE, MAINMENU, PLAYING, DEATH, BATTLE
+    }
+
 }

@@ -47,12 +47,12 @@ namespace Realms
             }
         }
 
-        public void addItem(Item item)
+        public bool addItem(Item item)
         {
             if (items.Count == 0)
             {
                 items.Add(item);
-                return;
+                return true;
             }
 
             bool sameItem = false;
@@ -75,12 +75,22 @@ namespace Realms
                 if (count != 0)
                 {
                     item.setCount(count);
-                    items.Add(item);
+                    if (items.Count < MAX)
+                    {
+                        items.Add(item);
+                    }
                 }
+                return true;
             }
             else
             {
-                items.Add(item);
+                if (items.Count < MAX)
+                {
+                    items.Add(item);
+                    return true;
+                }
+                else
+                    return false;
             }
         }
     }

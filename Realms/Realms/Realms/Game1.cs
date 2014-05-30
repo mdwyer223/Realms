@@ -13,11 +13,6 @@ using MySql.Data.MySqlClient;
 
 namespace Realms
 {
-    public enum GameState
-    {
-        PAUSE, MAINMENU, PLAYING, DEATH, BATTLE
-    }
-
     public class Game1 : Microsoft.Xna.Framework.Game
     {
         GraphicsDeviceManager graphics;
@@ -25,9 +20,11 @@ namespace Realms
 
         Server server;
         World world;
+        FormHandler forms;
         MainMenu mainMenu;
         PauseMenu pauseMenu;
         BattleHandler battleComp;
+        QuestHandler qHandler;
 
         string connectionTest = "", keyPress = "";
 
@@ -91,6 +88,9 @@ namespace Realms
             world = new World(this);
             Components.Add(world);
 
+            forms = new FormHandler(this);
+            Components.Add(forms);
+
             mainMenu = new MainMenu(this);
             Components.Add(mainMenu);
 
@@ -99,6 +99,9 @@ namespace Realms
 
             battleComp = new BattleHandler(this);
             Components.Add(battleComp);
+
+            qHandler = new QuestHandler(this);
+            Components.Add(qHandler);
 
             camera = new Camera2D(this);
             Components.Add(camera);
@@ -113,6 +116,10 @@ namespace Realms
         protected override void Update(GameTime gameTime)
         {
             Input.Update();
+
+            qHandler.getBattle(battleComp.CurrentBattle);
+            qHandler.getForm(forms.FormOpen);
+            qHandler.getPlayer(world.Grid.Player);
 
             if (changedState)
             {
@@ -160,11 +167,6 @@ namespace Realms
                 world.Enabled = world.Visible = false;
                 mainMenu.Enabled = mainMenu.Visible = false;
                 pauseMenu.Enabled = pauseMenu.Visible = false;
-            }
-
-            if (Input.escapePressed())
-            {
-                Game1.mainGameState = GameState.BATTLE;
             }
 
             //keyPress += Input.getRecentKeys();

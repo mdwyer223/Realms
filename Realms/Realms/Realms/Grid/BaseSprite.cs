@@ -103,5 +103,10 @@ namespace Realms
         {
             return this.Rec.Intersects(inRec);
         }
+
+        public bool isColliding(BaseSprite obj)
+        {
+            return this.Rec.Intersects(obj.Rec);
+        }
     }
 }

@@ -26,6 +26,21 @@ namespace Realms
             get { return Game1.GameContent.Load<SpriteFont>("BattleFonts/BattleMessage"); }
         }
 
+        public static SpriteFont FormBody
+        {
+            get { return Game1.GameContent.Load<SpriteFont>("FormFonts/FormBody"); }
+        }
+
+        public static SpriteFont FormSubTitle
+        {
+            get { return Game1.GameContent.Load<SpriteFont>("FormFonts/FormSubTitle"); }
+        }
+
+        public static SpriteFont FormTitle
+        {
+            get { return Game1.GameContent.Load<SpriteFont>("FormFonts/FormTitle"); }
+        }
+
         // other Spritefonts...
     }
 }

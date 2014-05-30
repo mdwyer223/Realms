@@ -14,10 +14,11 @@ namespace Realms
         public TestDungeon(int rows, int columns)
             : base(rows, columns, Location.Zero)
         {
-            objects.Add(new Building(Image.Particle, new Location(3, 3), 2, 2, 2, 4));
+            NPCs.Add(new Npc(Image.Particle, new Location(1, 1)));
+            objects.Add(new Building(Image.Building, new Location(3, 3), 2, 2, 2, 4));
             objects.Add(new Chest(Image.Particle, new Location(5, 5), 1, 1));
-            objects.Add(new TripWire(Image.Particle, new Location(5, 7), "testgrid"));
-            enemies.Add(new BaseEnemy(Image.Particle, 0, new Location(7, 5), EnemyType.LIGHT, 10));
+            objects.Add(new TripWire(Image.Teleporter, new Location(5, 7), "testgrid"));
+            enemies.Add(new BaseEnemy(Image.Particle, 0, new Location(7, 5), EnemyType.LIGHT, 0));
         }
 
         public override void generateEnemies()

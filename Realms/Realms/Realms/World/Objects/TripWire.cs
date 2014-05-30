@@ -23,7 +23,8 @@ namespace Realms
         {
             if (name.ToLower().Equals("testdungeon"))
             {
-                Game1.changeWorld(new TestDungeon(10, 10));//wont need parameters
+                Grid newG = new TestDungeon(10, 10);
+                Game1.changeWorld(newG);//wont need parameters
             }
             else if (name.ToLower().Equals("testgrid"))
             {

@@ -11,8 +11,8 @@ namespace Realms
 {
     public class Assault : BaseCharacter
     {
-        public Assault(Texture2D texture, Location startLoc, int level)
-            : base(texture, 7, startLoc, level)
+        public Assault(Texture2D texture, Location startLoc, int level, int id)
+            : base(texture, 7, startLoc, level, id)
         {
 
         }

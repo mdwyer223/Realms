@@ -29,6 +29,8 @@ namespace Realms
             : base(game)
         {
             g = new TestDungeon(10, 10);
+            g.Player = new Assassin(Image.Particle, Location.Zero, 98, 0);
+            g.Player.giveQuest(new TalkToNpc());
             spriteBatch = new SpriteBatch(game.GraphicsDevice);
         }
         

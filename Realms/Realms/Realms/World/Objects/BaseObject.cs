@@ -47,10 +47,34 @@ namespace Realms
 
         public override void update(GameTime gameTime, Grid gr)
         {
+            float distance = this.measureDis(gr.Player.Position);
+
+            if (isColliding(Input.mouseCollisionRec()))
+            {
+                if (distance <= (32 * Math.Sqrt(2)))
+                {
+                    mouseHover = true;
+                    if (Input.leftMouseClick())
+                    {
+                        //choose default option
+                        chooseInteraction(0, gr.Player);
+                    }
+                }
+            }
+            else
+            {
+                mouseHover = false;
+            }
+            
         }
 
         public override void draw(SpriteBatch spriteBatch)
         {
+            if (mouseHover)
+            {
+                spriteBatch.DrawString(Fonts.FormSubTitle, "Choose option: " + interactions[0],
+                    new Vector2(0, 0) - Game1.Camera.Origin + Game1.Camera.Position, color);
+            }
             spriteBatch.Draw(texture, DrawnRec, color);
         }
     }

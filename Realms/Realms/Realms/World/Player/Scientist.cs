@@ -11,8 +11,8 @@ namespace Realms
 {
     public class Scientist : BaseCharacter
     {
-        public Scientist(Texture2D texture, Location startLoc, int level)
-            : base(texture, 6, startLoc, level)
+        public Scientist(Texture2D texture, Location startLoc, int level, int id)
+            : base(texture, 6, startLoc, level, id)
         {
 
         }
