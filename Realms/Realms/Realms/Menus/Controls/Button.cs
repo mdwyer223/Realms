@@ -31,6 +31,22 @@ namespace Realms
             get { return label; }
         }
 
+        public SpriteFont CurrentFont
+        {
+            get { return standard; }
+        }
+
+        public Vector2 Position
+        {
+            get { return base.Position; }
+            set
+            {
+                base.Position = value;
+                this.hoverRec.X = (int)value.X;
+                this.hoverRec.Y = (int)value.Y;
+            }
+        }
+
         public Button(bool focus, Vector2 startPos, float scaleFactor, string name)
             : base(Image.Particle, scaleFactor, 0 , startPos)
         {

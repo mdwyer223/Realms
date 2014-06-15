@@ -35,7 +35,8 @@ namespace Realms
         {
             materia = new List<Materia>();
             stats = new Stats(null);
-            maxSlots = 1;
+            maxSlots = 6;
+            capacity = 1;
             //determine stats using increasing methods
         }
 
@@ -46,15 +47,22 @@ namespace Realms
 
             unequipMateria(slot, c);
             materia.Add(newMateria);
+            c.Inventory.ItemList.Remove(newMateria);
+            c.Inventory.cleanUp();
         }
 
         public void unequipMateria(int index, BaseCharacter character)
         {
-            if (materia.Count == 0)
+            if (materia.Count == 0 || index + 1 > materia.Count)
                 return;
 
             character.Inventory.addItem(materia[index]);
             materia.RemoveAt(index);
+        }
+
+        public override string ToString()
+        {
+            return Name + "\n" + stats.ToString();
         }
     }
 }

@@ -68,7 +68,7 @@ namespace Realms
                 map.Add(new List<Tile>());
                 for (int x = 0; x < columns; x++)
                 {
-                    map[y].Add(new Tile(Image.Particle, 0, new Location(y, x)));
+                    map[y].Add(new Tile(Image.Grass, 0, new Location(y, x)));
                 }
             }
 
@@ -84,6 +84,7 @@ namespace Realms
             enemies = new List<AdvancedSprite>();
             NPCs = new List<AdvancedSprite>();
             people = new List<NonControlledCharacter>();
+            objects = new List<BaseObject>();
             gridPos = Vector2.Zero;
             //player = new Assassin(Image.Particle, Location.Zero, 100);//TODO: remove
 
@@ -95,7 +96,7 @@ namespace Realms
                 map.Add(new List<Tile>());
                 for (int x = 0; x < columns; x++)
                 {
-                    map[y].Add(new Tile(Image.Particle, 0, new Location(y, x)));
+                    map[y].Add(new Tile(Image.Grass, 0, new Location(y, x)));
                 }
             }
 
@@ -152,6 +153,7 @@ namespace Realms
 
         public virtual void draw(SpriteBatch spriteBatch)
         {
+            
             for (int y = 0; y < rows; y++)
             {
                 for (int x = 0; x < columns; x++)
@@ -197,7 +199,7 @@ namespace Realms
         {
             GameTime gameTime = new GameTime();
 
-            while (Game1.Active)
+            while (Game1.Active && this != null)
             {
                 for (int y = 0; y < rows; y++)
                 {
@@ -263,6 +265,8 @@ namespace Realms
                         objs.Add(objects[o]);
                 }
             }
+            else
+                return null;
 
             return objs.ToArray();
         }
@@ -297,6 +301,21 @@ namespace Realms
                 return;
 
             map[loc.Row][loc.Column] = obj;
+        }
+
+        public void StopThread()
+        {
+            if (mapUpdate != null)
+            {
+                try
+                {
+                    mapUpdate.Abort();
+                }
+                finally
+                {
+                    mapUpdate = null;
+                }
+            }
         }
     }
 }

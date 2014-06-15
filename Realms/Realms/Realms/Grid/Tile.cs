@@ -102,6 +102,10 @@ namespace Realms
         {
             Tile[] objects = gr.getObjects();
 
+
+            if (Game1.State != GameState.PLAYING)
+                return;
+
             if (!IsDead)
             {
                 bool intersect = false; 
@@ -118,12 +122,12 @@ namespace Realms
                 if (intersect)
                 {
                     Open = false;
-                    this.color = Color.Red;
+                    //this.color = Color.Red;
                 }
                 else
                 {
                     Open = true;
-                    this.color = Color.Green;
+                    //this.color = Color.Green;
                 }
 
                 if (gr.Player != null)
@@ -148,6 +152,8 @@ namespace Realms
                     }
                 }
             }
+
+            color = Color.White;
         }
 
         public override void draw(SpriteBatch spriteBatch)

@@ -573,5 +573,14 @@ namespace Realms
             equation.accel = ((p.magicDamage * MaxStrength) - equation.initial - (equation.velo * MaxLevel)) / (float)(Math.Pow((MaxLevel), 2));
             magicDamage = (equation.accel * (float)(Math.Pow(Level, 2))) + (equation.velo * Level) + (equation.initial);
         }
+
+        public override string ToString()
+        {
+            string s = "HP: " + healthPoints + "  MP: " + manaPoints + "\nStr: " + (int)strength + "  Def: " + (int)defense + 
+                "\nSpd: " + (int)speed + "  Dodge: " + (int)dodge + "\nAcc: " + (int)accuracy + "  Crit: " + (int)critChance + 
+                "\nMagic: " + (int)magicDamage;
+
+            return s;
+        }
     }
 }

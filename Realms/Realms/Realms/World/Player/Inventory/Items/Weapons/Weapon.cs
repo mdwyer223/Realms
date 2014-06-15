@@ -51,6 +51,8 @@ namespace Realms
             damage = 1;
             critDamagePercent = 1.0f;
 
+            capacity = 1;
+
             options[0] = "Equip";
         }
 
@@ -73,15 +75,22 @@ namespace Realms
 
             unequipMateria(slot, c);
             materia.Add(newMateria);
+            c.Inventory.ItemList.Remove(newMateria);
+            c.Inventory.cleanUp();
         }
 
         public void unequipMateria(int index, BaseCharacter character)
         {
-            if (materia.Count == 0)
+            if (materia.Count == 0 || index + 1 > materia.Count)
                 return;
 
             character.Inventory.addItem(materia[index]);
             materia.RemoveAt(index);
+        }
+
+        public override string ToString()
+        {
+            return name + "\nDmg: " + damage + "\nCritDmg: " + critDamagePercent;
         }
     }
 }

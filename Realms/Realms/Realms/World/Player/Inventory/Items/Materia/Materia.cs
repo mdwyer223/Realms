@@ -65,6 +65,7 @@ namespace Realms
         public Materia(Texture2D texture, float scaleFactor, string name, int level, bool passive, bool summon)
             : base(texture, scaleFactor, name, false)
         {
+            count = 1;
             stats = new Stats(null);
             skillName = name;
             spellDamage = 1;

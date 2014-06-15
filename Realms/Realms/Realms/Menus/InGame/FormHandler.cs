@@ -22,6 +22,17 @@ namespace Realms
             get { return currentForm; }
         }
 
+        public bool Open
+        {
+            get
+            {
+                if (currentForm != null)
+                    return currentForm.Open;
+                else
+                    return false;
+            }
+        }
+
         public FormHandler(Game game)
             : base(game)
         {

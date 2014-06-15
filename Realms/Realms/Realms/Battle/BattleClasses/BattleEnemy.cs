@@ -50,6 +50,14 @@ namespace Realms
 
         public override void update(GameTime gameTime, List<BattleSprite> battleField)
         {
+            base.update(gameTime, battleField);
+
+            if (IsDead)
+            {
+                color = Color.Black;
+                return;
+            }
+
             if (state == BattleState.WAITING)
             {
                 color = Color.DarkBlue;
@@ -89,7 +97,7 @@ namespace Realms
                 int choice = rand.Next(0, characters.Count);
                 if(characters.Count > 0)
                 {
-                    characters[choice].damage(this.stats, new WoodenSword());
+                    characters[choice].damage(this.stats, new Stick());
                 }
                 color = Color.Green;
                 state = BattleState.MOVING;
@@ -100,7 +108,6 @@ namespace Realms
                 //sit here till the animation is over, then trigger waiting
                 state = BattleState.WAITING;
             }
-            base.update(gameTime, battleField);
         }
 
         public Item getDrop()
@@ -108,7 +115,10 @@ namespace Realms
             float chance = (float)rand.NextDouble();
             if (chance <= DropItemChance)
             {
-                return new WoodenSword();
+                if (rand.Next(1, 3) == 1)
+                    return new WoodenSword();
+                else
+                    return new Cloth();
             }
             return null;
         }

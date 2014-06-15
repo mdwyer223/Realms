@@ -130,6 +130,8 @@
     <Compile Include="Menus\InGame\FormHandler.cs" />
     <Compile Include="Menus\InGame\MiniMenu.cs" />
     <Compile Include="Menus\MainMenu\LogInForm.cs" />
+    <Compile Include="Menus\Pause\MateriaEquip.cs" />
+    <Compile Include="Menus\Pause\PauseEquipment.cs" />
     <Compile Include="World\NPCs\Npc.cs" />
     <Compile Include="World\NPCs\Quests\Quest.cs" />
     <Compile Include="World\NPCs\Quests\QuestHandler.cs" />
@@ -149,8 +151,10 @@
     <Compile Include="Battle\BattleClasses\BattleSprite.cs" />
     <Compile Include="Grid\Grid.cs" />
     <Compile Include="Grid\Location.cs" />
+    <Compile Include="World\Player\Character.cs" />
     <Compile Include="World\Player\Engineer.cs" />
     <Compile Include="World\Player\Inventory\Items\Armor\Cloth.cs" />
+    <Compile Include="World\Player\Inventory\Items\Armor\Platebody.cs" />
     <Compile Include="World\Player\Inventory\Items\Materia\DoubleStrike.cs" />
     <Compile Include="World\Player\Inventory\Items\Materia\Fire.cs" />
     <Compile Include="World\Player\Inventory\Items\Materia\GatlingCannon.cs" />
@@ -161,6 +165,7 @@
     <Compile Include="World\Player\Inventory\Items\Misc\Miscellanious.cs" />
     <Compile Include="World\Player\Inventory\Items\Misc\Potion.cs" />
     <Compile Include="World\Player\Inventory\Items\Weapons\MasterSword.cs" />
+    <Compile Include="World\Player\Inventory\Items\Weapons\Stick.cs" />
     <Compile Include="World\Player\Scientist.cs" />
     <Compile Include="World\Stats.cs" />
     <Compile Include="Grid\Tile.cs" />

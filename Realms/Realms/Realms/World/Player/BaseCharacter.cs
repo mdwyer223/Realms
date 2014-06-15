@@ -96,7 +96,10 @@ namespace Realms
 
         public override void update(GameTime gameTime, Grid map)
         {
-            talkToServer(); 
+            talkToServer();
+
+            if (Game1.State != GameState.PLAYING)
+                return;
 
             if (destLoc == null)
                 destLoc = loc;

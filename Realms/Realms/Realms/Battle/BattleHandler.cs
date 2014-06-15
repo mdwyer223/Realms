@@ -45,6 +45,7 @@ namespace Realms
             if (b.Over)
             {
                 Game1.changeWorld(currentGrid);
+                b = null;
             }
             base.Update(gameTime);
         }

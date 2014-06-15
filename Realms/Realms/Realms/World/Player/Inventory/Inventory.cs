@@ -8,7 +8,7 @@ namespace Realms
     public class Inventory
     {
         List<Item> items;
-        const int MAX = 50;
+        const int MAX = 200;
 
         public List<Item> ItemList
         {

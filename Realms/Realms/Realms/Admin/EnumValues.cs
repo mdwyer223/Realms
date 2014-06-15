@@ -50,4 +50,8 @@ namespace Realms
         PAUSE, MAINMENU, PLAYING, DEATH, BATTLE
     }
 
+    public enum EquipScreen
+    {
+        MATERIA, EQUIPMENT
+    }
 }

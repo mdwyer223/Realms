@@ -34,6 +34,7 @@ namespace Realms
         static Battle nextBattle;
         static Grid nextMap;
         static bool changedState = false;
+        static bool changingWorlds = false;
 
         static ContentManager otherContent;
         public static ContentManager GameContent
@@ -47,7 +48,7 @@ namespace Realms
             get { return otherDevice.Viewport; }
         }
 
-        static GameState mainGameState = GameState.MAINMENU;
+        static GameState mainGameState = GameState.PLAYING;
         public static GameState State
         {
             get { return mainGameState; }
@@ -121,6 +122,12 @@ namespace Realms
             qHandler.getForm(forms.FormOpen);
             qHandler.getPlayer(world.Grid.Player);
 
+            if (State == GameState.PLAYING)
+            {
+                if (Input.escapePressed() && !forms.Open)
+                    changeState(GameState.PAUSE);
+            }
+
             if (changedState)
             {
                 if (State == GameState.BATTLE)
@@ -130,7 +137,16 @@ namespace Realms
                 }
                 else if (State == GameState.PLAYING)
                 {
-                    world.changeMap(nextMap);
+                    if (changingWorlds)
+                    {
+                        world.Grid.StopThread();
+                        world.changeMap(nextMap);
+                        changingWorlds = false;
+                    }
+                    else if (battleComp.CurrentBattle != null)
+                    {
+                        world.changeMap(nextMap);
+                    }
                 }
 
                 changedState = false;
@@ -157,7 +173,13 @@ namespace Realms
             else if (mainGameState == GameState.PAUSE)
             {
                 pauseMenu.Enabled = pauseMenu.Visible = true;
-                world.Enabled = world.Visible = false;
+                pauseMenu.setCharacter(world.Grid.Player);
+                if (pauseMenu.Quit)
+                {
+                    this.Exit();
+                }
+                world.Enabled = true;
+                world.Visible = false;
                 mainMenu.Enabled = mainMenu.Visible = false;
                 battleComp.Visible = battleComp.Enabled = false;
             }
@@ -169,26 +191,17 @@ namespace Realms
                 pauseMenu.Enabled = pauseMenu.Visible = false;
             }
 
-            //keyPress += Input.getRecentKeys();
-            //if (Input.backPressed())
-            //{
-                //if (keyPress.Length > 0)
-                    //keyPress = keyPress.Remove(keyPress.Length - 1, 1);
-            //}
             base.Update(gameTime);
         }
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.Black);
+            //GraphicsDevice.Clear(Color.Black);
 
             base.Draw(gameTime);
 
-
             spriteBatch.Begin();
             spriteBatch.Draw(Image.Cursor, Input.mouseDrawnRec(), Color.White);
-            //nB.Draw(spriteBatch);
-            //b.Draw(spriteBatch);
             spriteBatch.End();  
         }
 
@@ -202,6 +215,7 @@ namespace Realms
         public static void changeWorld(Grid g)
         {
             changeState(GameState.PLAYING);
+            changingWorlds = true;
             nextMap = g;
         }
 

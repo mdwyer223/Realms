@@ -43,9 +43,10 @@ namespace Realms
         public override void Draw(GameTime gameTime)
         {
             RasterizerState rs = new RasterizerState();
-            rs.CullMode = CullMode.None;
+            rs.CullMode = CullMode.CullCounterClockwiseFace;
             
-            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, rs, null, Game1.Camera.Transform);
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp,
+                DepthStencilState.Default, rs, null, Game1.Camera.Transform);
             g.draw(spriteBatch);
             spriteBatch.End();
             base.Draw(gameTime);

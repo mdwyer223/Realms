@@ -23,6 +23,7 @@ namespace Realms
             : base(Image.Particle, .02f, "Double Strike", level, true, false)
         {
             maxLevel = 5;
+            count = 1;
             if (level > maxLevel)
                 level = maxLevel;
 

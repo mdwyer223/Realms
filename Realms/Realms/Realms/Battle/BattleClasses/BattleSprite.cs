@@ -87,15 +87,21 @@ namespace Realms
 
         public virtual void update(GameTime gameTime, List<BattleSprite> battleField)
         {
-            for (int i = 0; i < messages.Count; i++)
+            if (messages.Count > 0)
             {
-                if (messages[i] != null)
-                {
-                    messages[i].update(gameTime);
-                    if (messages[i].Over)
-                        messages.RemoveAt(i);
-                }
+                messages[0].update(gameTime);
+                if (messages[0].Over)
+                    messages.RemoveAt(0);
             }
+            //for (int i = 0; i < messages.Count; i++)
+            //{
+            //    if (messages[i] != null)
+            //    {
+            //        messages[i].update(gameTime);
+            //        if (messages[i].Over)
+            //            messages.RemoveAt(i);
+            //    }
+            //}
         }
 
         public override void draw(SpriteBatch spriteBatch)

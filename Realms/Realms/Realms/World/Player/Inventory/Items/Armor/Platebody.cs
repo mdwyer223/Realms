@@ -9,14 +9,12 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Realms
 {
-    public class MasterSword : Weapon
+    public class Platebody : Armor
     {
-        public MasterSword()
-            : base(Image.Particle, .02f, "Master Sword")
+        public Platebody()
+            : base(Image.Particle, .02f, "Platebody")
         {
-            damage = 65;
-            critDamagePercent = 1.25f;
-            this.materiaMax = 10;
+            Stats.increaseDefense(5.0f);
         }
     }
 }

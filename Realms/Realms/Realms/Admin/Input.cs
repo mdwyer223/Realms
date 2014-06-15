@@ -14,10 +14,14 @@ namespace Realms
         protected static KeyboardState keys, oldKeys;
         protected static MouseState mouse, oldMouse;
         protected static string currentString;
-        protected static int mouseWidth = 15, mouseHeight = 15;
+        protected static int mouseWidth = 15, mouseHeight = 15,
+            doubleClickTimer = 0, clickCounter = 0;
+
+        const int MAX_CLICK_WAIT = 15;
+        static bool timing;
 
         private static bool actionBar, right, left, up, down, escape, back, leftClick, rightClick,
-            rightHit, leftHit, upHit, downHit;
+            doubleClicked, rightHit, leftHit, upHit, downHit;
   
         public static bool rightDown()
         {
@@ -245,6 +249,11 @@ namespace Realms
             return rightClick;
         }
 
+        public static bool doubleClick()
+        {
+            return doubleClicked;
+        }
+
         public static Vector2 mousePos()
         {
             return (new Vector2(mouse.X, mouse.Y));
@@ -340,11 +349,38 @@ namespace Realms
             else
                 leftClick = false;
 
-            if ((mouse.RightButton == ButtonState.Released
+            if ((mouse.RightButton == ButtonState.Pressed
                 && oldMouse.RightButton == ButtonState.Released))
                 rightClick = true;
             else
                 rightClick = false;
+
+            if (leftClick && !timing)
+            {
+                timing = true;
+            }
+
+            if (timing)
+            {
+                doubleClickTimer++;
+                if (leftClick)
+                    clickCounter++;
+
+                if (clickCounter >= 2)
+                {
+                    doubleClicked = true;
+                    doubleClickTimer += 100;
+                }
+
+                if (doubleClickTimer > MAX_CLICK_WAIT)
+                {
+                    timing = false;
+                    doubleClickTimer = 0;
+                    clickCounter = 0;
+                }
+            }
+            else
+                doubleClicked = false;
 
             currentString = getKeysPressed();
             oldKeys = keys;

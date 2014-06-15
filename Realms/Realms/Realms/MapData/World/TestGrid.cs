@@ -12,9 +12,9 @@ namespace Realms
     public class TestGrid : Grid
     {
         public TestGrid()
-            : base()
+            : base(100, 100, new Location(60, 50))
         {
-            objects.Add(new TripWire(Image.Particle, new Location(0, 5), "testdungeon"));
+            objects.Add(new TripWire(Image.Particle, new Location(20, 40), "testdungeon"));
         }
 
         public override void update(GameTime gameTime)

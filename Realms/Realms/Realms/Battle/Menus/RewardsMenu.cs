@@ -13,7 +13,7 @@ namespace Realms
     {
         int expPool, selectorIndex, lastIndex;
         bool levelUp;
-        List<Label> itemList;
+        List<Label> itemList;//make them have rectangles for selection
         List<Item> items;
         Item rareItem;
         BaseCharacter realCharacter;
@@ -124,6 +124,8 @@ namespace Realms
 
             spriteBatch.Draw(Image.Particle, displayRec, Color.Black);
             spriteBatch.DrawString(Fonts.BattleMessage, "Experience gained: " + expPool, expPos, Color.White);
+            spriteBatch.DrawString(Fonts.BattleMessage, "(ESC)", new Vector2(this.displayRec.X + 
+                (displayRec.Width - (float)(Fonts.BattleMessage.MeasureString("(ESC)").X * 1.05)), displayRec.Y), Color.Red);
 
             foreach(Label l in itemList)
             {
@@ -131,7 +133,6 @@ namespace Realms
                 {
                     l.Position = itemPos;
                     l.draw(spriteBatch);
-                    //spriteBatch.DrawString(l.Font, l.Text, itemPos, Color.White);
                     itemPos.Y += l.Font.MeasureString(l.Text).Y + .02f * displayRec.Height;
                 }
 

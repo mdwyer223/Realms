@@ -51,6 +51,12 @@ namespace Realms
             get { return battleItem; }
         }
 
+        public Texture2D Texture
+        {
+            get { return texture; }
+            protected set { texture = value; }
+        }
+
         public Item(Texture2D texture, float scaleFactor, string name, bool battleItem)
             : base(texture, scaleFactor, 0, Vector2.Zero)
         {

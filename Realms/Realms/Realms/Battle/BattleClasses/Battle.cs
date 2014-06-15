@@ -136,7 +136,7 @@ namespace Realms
                 //constantly seek party's health, enemy's health, update damage dealt, update health/mana on server
                 for (int i = 0; i < battleField.Count; i++)
                 {
-                    if (battleField[i] != null && !battleField[i].IsDead)
+                    if (battleField[i] != null)
                     {
                         battleField[i].update(gameTime, battleField);
                     }

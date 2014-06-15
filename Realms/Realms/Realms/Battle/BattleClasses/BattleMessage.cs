@@ -23,6 +23,21 @@ namespace Realms
             get { return position.Y < targetPos.Y - 10; }
         }
 
+        public string Text
+        {
+            get { return message; }
+        }
+
+        public Color Color
+        {
+            get { return this.color; }
+        }
+
+        public Vector2 Position
+        {
+            get { return position; }
+        }
+
         public BattleMessage(string message, Color color, Vector2 target)
         {
             this.message = message;
@@ -40,7 +55,7 @@ namespace Realms
                 setPos = true;
             }
 
-            position.Y -= 1.0f;
+            position.Y -= .75f;
             alpha -= 3f;
         }
 

@@ -12,13 +12,15 @@ namespace Realms
     public class Assassin : BaseCharacter
     {
         public Assassin(Texture2D texture, Location startLoc, int level, int id)
-            : base(texture, 5, startLoc, level, id)
+            : base(texture, 3, startLoc, level, id)
         {
             equips.wep = new MasterSword();
-            equips.armor = new Cloth();
+            equips.armor = new Platebody();
 
             equips.wep.equipMateria(new DoubleStrike(5), 0, this);
             equips.armor.equipMateria(new Fire(5), 0, this);
+
+            invent.addItem(new Fire(2));
         }
 
         public override void update(GameTime gameTime, Grid map)
