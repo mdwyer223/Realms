@@ -219,16 +219,15 @@ namespace Realms
             nextMap = g;
         }
 
-        public static void changeActive()
-        {
-            active = !active;
-        }
-
         public static void changeState(GameState newState)
         {
             mainGameState = newState;
             changedState = true;
         }
-        
+
+        public static void changeActive()
+        {
+            active = !active;
+        }   
     }
 }

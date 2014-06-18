@@ -12,7 +12,7 @@ namespace Realms
     public class TestGrid : Grid
     {
         public TestGrid()
-            : base(100, 100, new Location(60, 50))
+            : base(100, 100, new Location(0, 5))
         {
             objects.Add(new TripWire(Image.Particle, new Location(20, 40), "testdungeon"));
         }

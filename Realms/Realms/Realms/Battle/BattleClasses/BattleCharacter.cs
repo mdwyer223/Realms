@@ -159,7 +159,7 @@ namespace Realms
                     if (character.Inventory.ItemList[i].BattleItem)
                     {
                         this.inventoryList.Add(character.Inventory.ItemList[i]);
-                        this.inventoryDisplay.Add(new Label(character.Inventory.ItemList[i].Name, Vector2.Zero, Fonts.BattleMenu));
+                        this.inventoryDisplay.Add(new Label(character.Inventory.ItemList[i].NameAndCount, Vector2.Zero, Fonts.BattleMenu));
                     }
                 }
             }

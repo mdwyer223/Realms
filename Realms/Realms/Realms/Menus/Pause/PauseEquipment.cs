@@ -63,8 +63,8 @@ namespace Realms
             statsZone = new Rectangle(inventoryZone.X, inventoryZone.Y + inventoryZone.Height, (int)width, (int)height);
             equipZone = new Rectangle(inventoryZone.X + inventoryZone.Width, 0, Game1.View.Width - inventoryZone.Width, Game1.View.Height);
 
-            nextPage = new DisplayItem(Image.Particle, new Vector2(inventoryZone.X + inventoryZone.Width, inventoryZone.Y), ">", 20, true);
-            prevPage = new DisplayItem(Image.Particle, new Vector2(nextPage.Rec.X, nextPage.Rec.Y + nextPage.Rec.Height + 3), "<", 20, true);
+            nextPage = new DisplayItem(Image.Particle, new Vector2(inventoryZone.X + inventoryZone.Width, inventoryZone.Y), "Next Page", 20, true);
+            prevPage = new DisplayItem(Image.Particle, new Vector2(nextPage.Rec.X, nextPage.Rec.Y + nextPage.Rec.Height + 3), "Prev Page", 20, true);
             pageNumber = new DisplayItem(Image.Particle, new Vector2(prevPage.Rec.X, prevPage.Rec.Y + prevPage.Rec.Height + 3), "0", 20, true);
         }
 
@@ -194,7 +194,7 @@ namespace Realms
                 if (bc != null)
                 {
                     spriteBatch.DrawString(Fonts.FormSubTitle, bc.Equipment.wep.ToString(),
-                        new Vector2(equipZone.X + (equipZone.Width * .2f), equipZone.Y), Color.White);
+                        new Vector2(equipZone.X + (equipZone.Width * .1f), equipZone.Y), Color.White);
                     spriteBatch.DrawString(Fonts.FormSubTitle, bc.Equipment.armor.ToString(),
                         new Vector2(equipZone.X + (equipZone.Width / 2), equipZone.Y), Color.White);
                     wep.draw(spriteBatch);
@@ -252,9 +252,9 @@ namespace Realms
             getNewItems(currentPage);
 
             wep = new DisplayItem(Image.Particle, new Vector2(equipZone.X + (equipZone.Width * .1f),
-                equipZone.Y + (equipZone.Height * .25f)), c.Equipment.wep.Name, 96, false);
+                equipZone.Y + (equipZone.Height * .33f)), c.Equipment.wep.Name, 96, false);
             armor = new DisplayItem(Image.Particle, new Vector2(equipZone.X + equipZone.Width - (equipZone.Width * .1f) - 96,
-                equipZone.Y + (equipZone.Height * .25f)), c.Equipment.armor.Name, 96, false);
+                equipZone.Y + (equipZone.Height * .33f)), c.Equipment.armor.Name, 96, false);
         }
 
         public void getNewItems(int pageNumber)
